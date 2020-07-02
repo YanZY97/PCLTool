@@ -22,6 +22,8 @@ PCLTool::PCLTool(QWidget *parent)
         });
     //过滤离群点
     connect(ui.btnOutlierRemoval, &QPushButton::clicked, this, &PCLTool::outlierRemoval);
+    //提取NARF特征点
+    connect(ui.btnNARF, &QPushButton::clicked, this, &PCLTool::narfKeypointExtraction);
     //改变显示点大小
     connect(ui.hSliderPointSize, &QSlider::valueChanged, [=](int value) {
         viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, value, "cloud");
@@ -43,12 +45,14 @@ PCLTool::PCLTool(QWidget *parent)
 
 
 /**
- *   初始化VtkWidget
+ *   初始化
  */
 void PCLTool::initialVtkWidget()
 {
     cloud_src.reset(new pcl::PointCloud<pcl::PointXYZ>);
     cloud_dst.reset(new pcl::PointCloud<pcl::PointXYZ>);
+    keypoints_ptr.reset(new pcl::PointCloud<pcl::PointXYZ>);
+    range_image_ptr.reset(new pcl::RangeImage);
     viewer.reset(new pcl::visualization::PCLVisualizer("viewer", false));
     viewer->addPointCloud(cloud_src, "cloud");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud");
@@ -128,12 +132,48 @@ void PCLTool::openFile()
 void PCLTool::outlierRemoval()
 {
     sor.setInputCloud(cloud_dst);
-    sor.setMeanK(50);
-    sor.setStddevMulThresh(1.0);
+    sor.setMeanK(ui.sboxMeank->value());
+    sor.setStddevMulThresh(ui.sboxStdThresh->value());
     sor.filter(*cloud_dst);
     showCloudMsgs(cloud_dst);
 
     viewer->updatePointCloud(cloud_dst, "cloud");
+    viewer->resetCamera();
+    ui.qvtkWidget->update();
+}
+
+/**
+ *  SLOT:提取NARF特征点
+ */
+void PCLTool::narfKeypointExtraction()
+{
+    float angular_resolution = pcl::deg2rad(ui.sboxAngularReslution->value());
+    float noise_level = ui.sboxNoiseLevel->value();
+    float min_range = ui.sboxMinRange->value();
+    int border_size = ui.sboxBorderSize->value();
+    float max_angle_width = pcl::deg2rad(360.0);
+    float max_angle_height = pcl::deg2rad(360.0);
+    float support_size = ui.sboxSupportSize->value();
+    Eigen::Affine3f scene_sensor_pose(Eigen::Affine3f::Identity());
+    pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
+    scene_sensor_pose = Eigen::Affine3f(Eigen::Translation3f(cloud_dst->sensor_origin_[0],
+        cloud_dst->sensor_origin_[1],
+        cloud_dst->sensor_origin_[2])) *
+        Eigen::Affine3f(cloud_dst->sensor_orientation_);
+    range_image_ptr->createFromPointCloud(*cloud_dst, angular_resolution, max_angle_width, max_angle_height,
+        scene_sensor_pose, coordinate_frame, noise_level, min_range, border_size);
+    range_image_ptr->setUnseenToMaxRange();
+    pcl::NarfKeypoint narf_keypoint_detector(&range_image_border_extractor);
+    //pcl::RangeImage& range_image = *range_image_ptr;
+    range_image_border_extractor.setRangeImage(&*range_image_ptr);
+    narf_keypoint_detector.getParameters().support_size = support_size;
+    narf_keypoint_detector.compute(keypoint_indices);
+    keypoints_ptr->points.resize(keypoint_indices.points.size());
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> keypoints_color_handler(keypoints_ptr, 0, 255, 0);
+    for (size_t i = 0; i < keypoint_indices.points.size(); ++i)
+        keypoints_ptr->points[i].getVector3fMap() = range_image_ptr->points[keypoint_indices.points[i]].getVector3fMap();
+    viewer->addPointCloud<pcl::PointXYZ>(keypoints_ptr, keypoints_color_handler, "keypoints");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "keypoints");
     viewer->resetCamera();
     ui.qvtkWidget->update();
 }
