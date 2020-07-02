@@ -24,6 +24,8 @@ PCLTool::PCLTool(QWidget *parent)
     connect(ui.btnOutlierRemoval, &QPushButton::clicked, this, &PCLTool::outlierRemoval);
     //提取NARF特征点
     connect(ui.btnNARF, &QPushButton::clicked, this, &PCLTool::narfKeypointExtraction);
+    //提取SIFT特征点
+    connect(ui.btnSIFT, &QPushButton::clicked, this, &PCLTool::siftKeypointExtraction);
     //改变显示点大小
     connect(ui.hSliderPointSize, &QSlider::valueChanged, [=](int value) {
         viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, value, "cloud");
@@ -43,7 +45,6 @@ PCLTool::PCLTool(QWidget *parent)
         });
 }
 
-
 /**
  *   初始化
  */
@@ -51,8 +52,10 @@ void PCLTool::initialVtkWidget()
 {
     cloud_src.reset(new pcl::PointCloud<pcl::PointXYZ>);
     cloud_dst.reset(new pcl::PointCloud<pcl::PointXYZ>);
-    keypoints_ptr.reset(new pcl::PointCloud<pcl::PointXYZ>);
+    narf_keypoints_ptr.reset(new pcl::PointCloud<pcl::PointXYZ>);
     range_image_ptr.reset(new pcl::RangeImage);
+    tree.reset(new pcl::search::KdTree<pcl::PointXYZ>);
+    cloud_temp.reset(new pcl::PointCloud<pcl::PointXYZ>);
     viewer.reset(new pcl::visualization::PCLVisualizer("viewer", false));
     viewer->addPointCloud(cloud_src, "cloud");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud");
@@ -82,7 +85,6 @@ void PCLTool::showCloudMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud)
     ui.lblYlength->setText(y_length_qstr);
     ui.lblZlength->setText(z_length_qstr);
 }
-
 
 /**
  *  SLOT:打开文件
@@ -138,7 +140,6 @@ void PCLTool::outlierRemoval()
     showCloudMsgs(cloud_dst);
 
     viewer->updatePointCloud(cloud_dst, "cloud");
-    viewer->resetCamera();
     ui.qvtkWidget->update();
 }
 
@@ -168,12 +169,36 @@ void PCLTool::narfKeypointExtraction()
     range_image_border_extractor.setRangeImage(&*range_image_ptr);
     narf_keypoint_detector.getParameters().support_size = support_size;
     narf_keypoint_detector.compute(keypoint_indices);
-    keypoints_ptr->points.resize(keypoint_indices.points.size());
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> keypoints_color_handler(keypoints_ptr, 0, 255, 0);
+    narf_keypoints_ptr->points.resize(keypoint_indices.points.size());
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> keypoints_color_handler(narf_keypoints_ptr, 0, 255, 0);
     for (size_t i = 0; i < keypoint_indices.points.size(); ++i)
-        keypoints_ptr->points[i].getVector3fMap() = range_image_ptr->points[keypoint_indices.points[i]].getVector3fMap();
-    viewer->addPointCloud<pcl::PointXYZ>(keypoints_ptr, keypoints_color_handler, "keypoints");
-    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "keypoints");
-    viewer->resetCamera();
+        narf_keypoints_ptr->points[i].getVector3fMap() = range_image_ptr->points[keypoint_indices.points[i]].getVector3fMap();
+    QString num_keypoints_qstr = QString::number(keypoint_indices.points.size());
+    ui.lblNumKeypoints->setText(num_keypoints_qstr);
+    viewer->addPointCloud<pcl::PointXYZ>(narf_keypoints_ptr, keypoints_color_handler, "narf_keypoints");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "narf_keypoints");
+    ui.qvtkWidget->update();
+}
+
+/**
+ *  SLOT:提取SIFT特征点
+ */
+void PCLTool::siftKeypointExtraction()
+{
+    float min_scale = ui.sboxMinScale->value();
+    int n_octaves = ui.sboxOctaves->value();
+    int n_scales_per_octave = ui.sboxOctaveScales->value();
+    float min_contrast = ui.sboxMinContrast->value();
+    sift.setInputCloud(cloud_dst);
+    sift.setSearchMethod(tree);
+    sift.setScales(min_scale, n_octaves, n_scales_per_octave);
+    sift.setMinimumContrast(min_contrast);
+    sift.compute(sift_keypoints);
+    pcl::copyPointCloud(sift_keypoints, *cloud_temp);
+    QString num_points_qstr = QString::number(cloud_temp->size());
+    ui.lblNumKeypoints->setText(num_points_qstr);
+    viewer->addPointCloud<pcl::PointXYZ>(cloud_temp, "sift_keypoints");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "sift_keypoints");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 0, 255, "sift_keypoints");
     ui.qvtkWidget->update();
 }

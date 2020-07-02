@@ -28,6 +28,7 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTabWidget>
 #include <QtWidgets/QToolBar>
+#include <QtWidgets/QToolBox>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "QVTKWidget.h"
@@ -55,6 +56,8 @@ public:
     QLabel *lblXlength;
     QLabel *lblYlength;
     QLabel *lblZlength;
+    QLabel *label_14;
+    QLabel *lblNumKeypoints;
     QGridLayout *layoutSliderPSize;
     QLabel *label;
     QSlider *hSliderPointSize;
@@ -76,6 +79,9 @@ public:
     QPushButton *btnOutlierRemoval;
     QWidget *tab_2;
     QVBoxLayout *verticalLayout_3;
+    QToolBox *toolBox;
+    QWidget *pageNARFPoints;
+    QVBoxLayout *verticalLayout_4;
     QFormLayout *formLayout_3;
     QLabel *label_9;
     QDoubleSpinBox *sboxAngularReslution;
@@ -88,6 +94,18 @@ public:
     QLabel *label_13;
     QDoubleSpinBox *sboxSupportSize;
     QPushButton *btnNARF;
+    QWidget *pageSIFTPoints;
+    QVBoxLayout *verticalLayout_5;
+    QFormLayout *formLayout_4;
+    QLabel *label_15;
+    QDoubleSpinBox *sboxMinScale;
+    QLabel *label_16;
+    QSpinBox *sboxOctaves;
+    QLabel *label_17;
+    QSpinBox *sboxOctaveScales;
+    QLabel *label_18;
+    QDoubleSpinBox *sboxMinContrast;
+    QPushButton *btnSIFT;
     QMenuBar *menuBar;
     QMenu *menu;
     QToolBar *mainToolBar;
@@ -189,6 +207,18 @@ public:
         lblZlength->setFont(font);
 
         formLayout->setWidget(4, QFormLayout::FieldRole, lblZlength);
+
+        label_14 = new QLabel(groupBoxValues);
+        label_14->setObjectName(QString::fromUtf8("label_14"));
+        label_14->setFont(font);
+
+        formLayout->setWidget(5, QFormLayout::LabelRole, label_14);
+
+        lblNumKeypoints = new QLabel(groupBoxValues);
+        lblNumKeypoints->setObjectName(QString::fromUtf8("lblNumKeypoints"));
+        lblNumKeypoints->setFont(font);
+
+        formLayout->setWidget(5, QFormLayout::FieldRole, lblNumKeypoints);
 
 
         verticalLayout_2->addLayout(formLayout);
@@ -322,16 +352,28 @@ public:
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         verticalLayout_3->setContentsMargins(5, 5, 5, 5);
+        toolBox = new QToolBox(tab_2);
+        toolBox->setObjectName(QString::fromUtf8("toolBox"));
+        toolBox->setFrameShape(QFrame::NoFrame);
+        toolBox->setFrameShadow(QFrame::Sunken);
+        pageNARFPoints = new QWidget();
+        pageNARFPoints->setObjectName(QString::fromUtf8("pageNARFPoints"));
+        pageNARFPoints->setGeometry(QRect(0, 0, 222, 525));
+        verticalLayout_4 = new QVBoxLayout(pageNARFPoints);
+        verticalLayout_4->setSpacing(6);
+        verticalLayout_4->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+        verticalLayout_4->setContentsMargins(5, 5, 5, 5);
         formLayout_3 = new QFormLayout();
         formLayout_3->setSpacing(6);
         formLayout_3->setObjectName(QString::fromUtf8("formLayout_3"));
         formLayout_3->setContentsMargins(0, 0, 0, 0);
-        label_9 = new QLabel(tab_2);
+        label_9 = new QLabel(pageNARFPoints);
         label_9->setObjectName(QString::fromUtf8("label_9"));
 
         formLayout_3->setWidget(0, QFormLayout::LabelRole, label_9);
 
-        sboxAngularReslution = new QDoubleSpinBox(tab_2);
+        sboxAngularReslution = new QDoubleSpinBox(pageNARFPoints);
         sboxAngularReslution->setObjectName(QString::fromUtf8("sboxAngularReslution"));
         sboxAngularReslution->setDecimals(2);
         sboxAngularReslution->setMaximum(10.000000000000000);
@@ -340,47 +382,47 @@ public:
 
         formLayout_3->setWidget(0, QFormLayout::FieldRole, sboxAngularReslution);
 
-        label_10 = new QLabel(tab_2);
+        label_10 = new QLabel(pageNARFPoints);
         label_10->setObjectName(QString::fromUtf8("label_10"));
 
         formLayout_3->setWidget(1, QFormLayout::LabelRole, label_10);
 
-        sboxNoiseLevel = new QDoubleSpinBox(tab_2);
+        sboxNoiseLevel = new QDoubleSpinBox(pageNARFPoints);
         sboxNoiseLevel->setObjectName(QString::fromUtf8("sboxNoiseLevel"));
         sboxNoiseLevel->setDecimals(1);
         sboxNoiseLevel->setSingleStep(0.100000000000000);
 
         formLayout_3->setWidget(1, QFormLayout::FieldRole, sboxNoiseLevel);
 
-        label_11 = new QLabel(tab_2);
+        label_11 = new QLabel(pageNARFPoints);
         label_11->setObjectName(QString::fromUtf8("label_11"));
 
         formLayout_3->setWidget(2, QFormLayout::LabelRole, label_11);
 
-        sboxMinRange = new QDoubleSpinBox(tab_2);
+        sboxMinRange = new QDoubleSpinBox(pageNARFPoints);
         sboxMinRange->setObjectName(QString::fromUtf8("sboxMinRange"));
         sboxMinRange->setDecimals(1);
         sboxMinRange->setSingleStep(0.100000000000000);
 
         formLayout_3->setWidget(2, QFormLayout::FieldRole, sboxMinRange);
 
-        label_12 = new QLabel(tab_2);
+        label_12 = new QLabel(pageNARFPoints);
         label_12->setObjectName(QString::fromUtf8("label_12"));
 
         formLayout_3->setWidget(3, QFormLayout::LabelRole, label_12);
 
-        sboxBorderSize = new QSpinBox(tab_2);
+        sboxBorderSize = new QSpinBox(pageNARFPoints);
         sboxBorderSize->setObjectName(QString::fromUtf8("sboxBorderSize"));
         sboxBorderSize->setValue(1);
 
         formLayout_3->setWidget(3, QFormLayout::FieldRole, sboxBorderSize);
 
-        label_13 = new QLabel(tab_2);
+        label_13 = new QLabel(pageNARFPoints);
         label_13->setObjectName(QString::fromUtf8("label_13"));
 
         formLayout_3->setWidget(4, QFormLayout::LabelRole, label_13);
 
-        sboxSupportSize = new QDoubleSpinBox(tab_2);
+        sboxSupportSize = new QDoubleSpinBox(pageNARFPoints);
         sboxSupportSize->setObjectName(QString::fromUtf8("sboxSupportSize"));
         sboxSupportSize->setDecimals(2);
         sboxSupportSize->setSingleStep(0.010000000000000);
@@ -389,19 +431,93 @@ public:
         formLayout_3->setWidget(4, QFormLayout::FieldRole, sboxSupportSize);
 
 
-        verticalLayout_3->addLayout(formLayout_3);
+        verticalLayout_4->addLayout(formLayout_3);
 
-        btnNARF = new QPushButton(tab_2);
+        btnNARF = new QPushButton(pageNARFPoints);
         btnNARF->setObjectName(QString::fromUtf8("btnNARF"));
 
-        verticalLayout_3->addWidget(btnNARF);
+        verticalLayout_4->addWidget(btnNARF);
+
+        toolBox->addItem(pageNARFPoints, QString::fromUtf8("NARF\345\205\263\351\224\256\347\202\271"));
+        pageSIFTPoints = new QWidget();
+        pageSIFTPoints->setObjectName(QString::fromUtf8("pageSIFTPoints"));
+        pageSIFTPoints->setGeometry(QRect(0, 0, 222, 525));
+        verticalLayout_5 = new QVBoxLayout(pageSIFTPoints);
+        verticalLayout_5->setSpacing(6);
+        verticalLayout_5->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        verticalLayout_5->setContentsMargins(5, 5, 5, 5);
+        formLayout_4 = new QFormLayout();
+        formLayout_4->setSpacing(6);
+        formLayout_4->setObjectName(QString::fromUtf8("formLayout_4"));
+        label_15 = new QLabel(pageSIFTPoints);
+        label_15->setObjectName(QString::fromUtf8("label_15"));
+
+        formLayout_4->setWidget(0, QFormLayout::LabelRole, label_15);
+
+        sboxMinScale = new QDoubleSpinBox(pageSIFTPoints);
+        sboxMinScale->setObjectName(QString::fromUtf8("sboxMinScale"));
+        sboxMinScale->setMaximum(1.000000000000000);
+        sboxMinScale->setSingleStep(0.010000000000000);
+        sboxMinScale->setValue(0.010000000000000);
+
+        formLayout_4->setWidget(0, QFormLayout::FieldRole, sboxMinScale);
+
+        label_16 = new QLabel(pageSIFTPoints);
+        label_16->setObjectName(QString::fromUtf8("label_16"));
+
+        formLayout_4->setWidget(1, QFormLayout::LabelRole, label_16);
+
+        sboxOctaves = new QSpinBox(pageSIFTPoints);
+        sboxOctaves->setObjectName(QString::fromUtf8("sboxOctaves"));
+        sboxOctaves->setMaximum(20);
+        sboxOctaves->setValue(6);
+
+        formLayout_4->setWidget(1, QFormLayout::FieldRole, sboxOctaves);
+
+        label_17 = new QLabel(pageSIFTPoints);
+        label_17->setObjectName(QString::fromUtf8("label_17"));
+
+        formLayout_4->setWidget(2, QFormLayout::LabelRole, label_17);
+
+        sboxOctaveScales = new QSpinBox(pageSIFTPoints);
+        sboxOctaveScales->setObjectName(QString::fromUtf8("sboxOctaveScales"));
+        sboxOctaveScales->setMaximum(20);
+        sboxOctaveScales->setValue(4);
+
+        formLayout_4->setWidget(2, QFormLayout::FieldRole, sboxOctaveScales);
+
+        label_18 = new QLabel(pageSIFTPoints);
+        label_18->setObjectName(QString::fromUtf8("label_18"));
+
+        formLayout_4->setWidget(3, QFormLayout::LabelRole, label_18);
+
+        sboxMinContrast = new QDoubleSpinBox(pageSIFTPoints);
+        sboxMinContrast->setObjectName(QString::fromUtf8("sboxMinContrast"));
+        sboxMinContrast->setMaximum(10.000000000000000);
+        sboxMinContrast->setSingleStep(0.010000000000000);
+        sboxMinContrast->setValue(0.010000000000000);
+
+        formLayout_4->setWidget(3, QFormLayout::FieldRole, sboxMinContrast);
+
+
+        verticalLayout_5->addLayout(formLayout_4);
+
+        btnSIFT = new QPushButton(pageSIFTPoints);
+        btnSIFT->setObjectName(QString::fromUtf8("btnSIFT"));
+
+        verticalLayout_5->addWidget(btnSIFT);
+
+        toolBox->addItem(pageSIFTPoints, QString::fromUtf8("SIFT\345\205\263\351\224\256\347\202\271"));
+
+        verticalLayout_3->addWidget(toolBox);
 
         tabWidget->addTab(tab_2, QString());
 
         horizontalLayout->addWidget(tabWidget);
 
-        horizontalLayout->setStretch(1, 3);
-        horizontalLayout->setStretch(2, 1);
+        horizontalLayout->setStretch(1, 5);
+        horizontalLayout->setStretch(2, 2);
         PCLToolClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(PCLToolClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -426,6 +542,8 @@ public:
         QObject::connect(hSliderPointSize, SIGNAL(valueChanged(int)), label_6, SLOT(setNum(int)));
 
         tabWidget->setCurrentIndex(1);
+        toolBox->setCurrentIndex(1);
+        toolBox->layout()->setSpacing(0);
 
 
         QMetaObject::connectSlotsByName(PCLToolClass);
@@ -447,6 +565,8 @@ public:
         lblXlength->setText(QString());
         lblYlength->setText(QString());
         lblZlength->setText(QString());
+        label_14->setText(QApplication::translate("PCLToolClass", "\347\211\271\345\276\201\347\202\271\344\270\252\346\225\260:", nullptr));
+        lblNumKeypoints->setText(QString());
         label->setText(QApplication::translate("PCLToolClass", "\346\230\276\347\244\272\347\202\271\345\244\247\345\260\217", nullptr));
         label_6->setText(QApplication::translate("PCLToolClass", "1", nullptr));
         btnResetCamera->setText(QApplication::translate("PCLToolClass", "\351\207\215\347\275\256\351\225\234\345\244\264", nullptr));
@@ -462,6 +582,13 @@ public:
         label_12->setText(QApplication::translate("PCLToolClass", "\350\276\271\347\225\214\345\244\247\345\260\217", nullptr));
         label_13->setText(QApplication::translate("PCLToolClass", "NARF\347\202\271\346\220\234\347\264\242\345\215\212\345\276\204", nullptr));
         btnNARF->setText(QApplication::translate("PCLToolClass", "\346\217\220\345\217\226NARF\345\205\263\351\224\256\347\202\271", nullptr));
+        toolBox->setItemText(toolBox->indexOf(pageNARFPoints), QApplication::translate("PCLToolClass", "NARF\345\205\263\351\224\256\347\202\271", nullptr));
+        label_15->setText(QApplication::translate("PCLToolClass", "min_scale", nullptr));
+        label_16->setText(QApplication::translate("PCLToolClass", "octaves", nullptr));
+        label_17->setText(QApplication::translate("PCLToolClass", "octave scales", nullptr));
+        label_18->setText(QApplication::translate("PCLToolClass", "\351\230\210\345\200\274", nullptr));
+        btnSIFT->setText(QApplication::translate("PCLToolClass", "\346\217\220\345\217\226SIFT\345\205\263\351\224\256\347\202\271", nullptr));
+        toolBox->setItemText(toolBox->indexOf(pageSIFTPoints), QApplication::translate("PCLToolClass", "SIFT\345\205\263\351\224\256\347\202\271", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("PCLToolClass", "\346\217\220\345\217\226\345\205\263\351\224\256\347\202\271", nullptr));
         menu->setTitle(QApplication::translate("PCLToolClass", "File", nullptr));
     } // retranslateUi
