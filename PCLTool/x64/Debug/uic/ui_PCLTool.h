@@ -77,7 +77,7 @@ public:
     QLabel *label_8;
     QDoubleSpinBox *sboxStdThresh;
     QPushButton *btnOutlierRemoval;
-    QWidget *tab_2;
+    QWidget *tabKeypoints;
     QVBoxLayout *verticalLayout_3;
     QToolBox *toolBox;
     QWidget *pageNARFPoints;
@@ -106,6 +106,15 @@ public:
     QLabel *label_18;
     QDoubleSpinBox *sboxMinContrast;
     QPushButton *btnSIFT;
+    QWidget *pageHarrisPoints;
+    QVBoxLayout *verticalLayout_6;
+    QFormLayout *formLayout_5;
+    QLabel *label_19;
+    QLabel *label_20;
+    QDoubleSpinBox *sboxRadius;
+    QDoubleSpinBox *sboxRadiusSearch;
+    QPushButton *btnHarris;
+    QWidget *tab;
     QMenuBar *menuBar;
     QMenu *menu;
     QToolBar *mainToolBar;
@@ -345,14 +354,14 @@ public:
         verticalLayout->addWidget(btnOutlierRemoval);
 
         tabWidget->addTab(tabOutlierRemoval, QString());
-        tab_2 = new QWidget();
-        tab_2->setObjectName(QString::fromUtf8("tab_2"));
-        verticalLayout_3 = new QVBoxLayout(tab_2);
+        tabKeypoints = new QWidget();
+        tabKeypoints->setObjectName(QString::fromUtf8("tabKeypoints"));
+        verticalLayout_3 = new QVBoxLayout(tabKeypoints);
         verticalLayout_3->setSpacing(6);
         verticalLayout_3->setContentsMargins(11, 11, 11, 11);
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         verticalLayout_3->setContentsMargins(5, 5, 5, 5);
-        toolBox = new QToolBox(tab_2);
+        toolBox = new QToolBox(tabKeypoints);
         toolBox->setObjectName(QString::fromUtf8("toolBox"));
         toolBox->setFrameShape(QFrame::NoFrame);
         toolBox->setFrameShadow(QFrame::Sunken);
@@ -441,7 +450,7 @@ public:
         toolBox->addItem(pageNARFPoints, QString::fromUtf8("NARF\345\205\263\351\224\256\347\202\271"));
         pageSIFTPoints = new QWidget();
         pageSIFTPoints->setObjectName(QString::fromUtf8("pageSIFTPoints"));
-        pageSIFTPoints->setGeometry(QRect(0, 0, 222, 525));
+        pageSIFTPoints->setGeometry(QRect(0, 0, 222, 502));
         verticalLayout_5 = new QVBoxLayout(pageSIFTPoints);
         verticalLayout_5->setSpacing(6);
         verticalLayout_5->setContentsMargins(11, 11, 11, 11);
@@ -509,10 +518,56 @@ public:
         verticalLayout_5->addWidget(btnSIFT);
 
         toolBox->addItem(pageSIFTPoints, QString::fromUtf8("SIFT\345\205\263\351\224\256\347\202\271"));
+        pageHarrisPoints = new QWidget();
+        pageHarrisPoints->setObjectName(QString::fromUtf8("pageHarrisPoints"));
+        verticalLayout_6 = new QVBoxLayout(pageHarrisPoints);
+        verticalLayout_6->setSpacing(6);
+        verticalLayout_6->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_6->setObjectName(QString::fromUtf8("verticalLayout_6"));
+        verticalLayout_6->setContentsMargins(5, 5, 5, 5);
+        formLayout_5 = new QFormLayout();
+        formLayout_5->setSpacing(6);
+        formLayout_5->setObjectName(QString::fromUtf8("formLayout_5"));
+        label_19 = new QLabel(pageHarrisPoints);
+        label_19->setObjectName(QString::fromUtf8("label_19"));
+
+        formLayout_5->setWidget(0, QFormLayout::LabelRole, label_19);
+
+        label_20 = new QLabel(pageHarrisPoints);
+        label_20->setObjectName(QString::fromUtf8("label_20"));
+
+        formLayout_5->setWidget(1, QFormLayout::LabelRole, label_20);
+
+        sboxRadius = new QDoubleSpinBox(pageHarrisPoints);
+        sboxRadius->setObjectName(QString::fromUtf8("sboxRadius"));
+        sboxRadius->setSingleStep(0.010000000000000);
+        sboxRadius->setValue(0.100000000000000);
+
+        formLayout_5->setWidget(0, QFormLayout::FieldRole, sboxRadius);
+
+        sboxRadiusSearch = new QDoubleSpinBox(pageHarrisPoints);
+        sboxRadiusSearch->setObjectName(QString::fromUtf8("sboxRadiusSearch"));
+        sboxRadiusSearch->setSingleStep(0.010000000000000);
+        sboxRadiusSearch->setValue(0.100000000000000);
+
+        formLayout_5->setWidget(1, QFormLayout::FieldRole, sboxRadiusSearch);
+
+
+        verticalLayout_6->addLayout(formLayout_5);
+
+        btnHarris = new QPushButton(pageHarrisPoints);
+        btnHarris->setObjectName(QString::fromUtf8("btnHarris"));
+
+        verticalLayout_6->addWidget(btnHarris);
+
+        toolBox->addItem(pageHarrisPoints, QString::fromUtf8("Harris\345\205\263\351\224\256\347\202\271"));
 
         verticalLayout_3->addWidget(toolBox);
 
-        tabWidget->addTab(tab_2, QString());
+        tabWidget->addTab(tabKeypoints, QString());
+        tab = new QWidget();
+        tab->setObjectName(QString::fromUtf8("tab"));
+        tabWidget->addTab(tab, QString());
 
         horizontalLayout->addWidget(tabWidget);
 
@@ -542,7 +597,7 @@ public:
         QObject::connect(hSliderPointSize, SIGNAL(valueChanged(int)), label_6, SLOT(setNum(int)));
 
         tabWidget->setCurrentIndex(1);
-        toolBox->setCurrentIndex(1);
+        toolBox->setCurrentIndex(2);
         toolBox->layout()->setSpacing(0);
 
 
@@ -589,7 +644,12 @@ public:
         label_18->setText(QApplication::translate("PCLToolClass", "\351\230\210\345\200\274", nullptr));
         btnSIFT->setText(QApplication::translate("PCLToolClass", "\346\217\220\345\217\226SIFT\345\205\263\351\224\256\347\202\271", nullptr));
         toolBox->setItemText(toolBox->indexOf(pageSIFTPoints), QApplication::translate("PCLToolClass", "SIFT\345\205\263\351\224\256\347\202\271", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tab_2), QApplication::translate("PCLToolClass", "\346\217\220\345\217\226\345\205\263\351\224\256\347\202\271", nullptr));
+        label_19->setText(QApplication::translate("PCLToolClass", "\346\263\225\345\220\221\351\207\217\344\274\260\350\256\241\345\215\212\345\276\204", nullptr));
+        label_20->setText(QApplication::translate("PCLToolClass", "\350\277\221\351\202\273\346\220\234\347\264\242\345\215\212\345\276\204", nullptr));
+        btnHarris->setText(QApplication::translate("PCLToolClass", "\346\217\220\345\217\226Harris\345\205\263\351\224\256\347\202\271", nullptr));
+        toolBox->setItemText(toolBox->indexOf(pageHarrisPoints), QApplication::translate("PCLToolClass", "Harris\345\205\263\351\224\256\347\202\271", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tabKeypoints), QApplication::translate("PCLToolClass", "\346\217\220\345\217\226\345\205\263\351\224\256\347\202\271", nullptr));
+        tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("PCLToolClass", "\351\241\265", nullptr));
         menu->setTitle(QApplication::translate("PCLToolClass", "File", nullptr));
     } // retranslateUi
 

@@ -15,20 +15,23 @@ PCLTool::PCLTool(QWidget *parent)
     initialVtkWidget();
     //打开文件
     connect(ui.actionOpen, &QAction::triggered, this, &PCLTool::openFile);
-    //重置镜头
-    connect(ui.btnResetCamera, &QPushButton::clicked, [=]() {
-        viewer->resetCamera();
-        ui.qvtkWidget->update();
-        });
+
     //过滤离群点
     connect(ui.btnOutlierRemoval, &QPushButton::clicked, this, &PCLTool::outlierRemoval);
     //提取NARF特征点
     connect(ui.btnNARF, &QPushButton::clicked, this, &PCLTool::narfKeypointExtraction);
     //提取SIFT特征点
     connect(ui.btnSIFT, &QPushButton::clicked, this, &PCLTool::siftKeypointExtraction);
+    //提取harris特征点
+    connect(ui.btnHarris, &QPushButton::clicked, this, &PCLTool::harrisKeypointExtraction);
     //改变显示点大小
     connect(ui.hSliderPointSize, &QSlider::valueChanged, [=](int value) {
         viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, value, "cloud");
+        ui.qvtkWidget->update();
+        });
+    //重置镜头
+    connect(ui.btnResetCamera, &QPushButton::clicked, [=]() {
+        viewer->resetCamera();
         ui.qvtkWidget->update();
         });
     //显示原始点云
@@ -53,9 +56,11 @@ void PCLTool::initialVtkWidget()
     cloud_src.reset(new pcl::PointCloud<pcl::PointXYZ>);
     cloud_dst.reset(new pcl::PointCloud<pcl::PointXYZ>);
     narf_keypoints_ptr.reset(new pcl::PointCloud<pcl::PointXYZ>);
+    harris_keypoints_ptr.reset(new pcl::PointCloud<pcl::PointXYZI>);
     range_image_ptr.reset(new pcl::RangeImage);
     tree.reset(new pcl::search::KdTree<pcl::PointXYZ>);
     cloud_temp.reset(new pcl::PointCloud<pcl::PointXYZ>);
+
     viewer.reset(new pcl::visualization::PCLVisualizer("viewer", false));
     viewer->addPointCloud(cloud_src, "cloud");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud");
@@ -99,24 +104,27 @@ void PCLTool::openFile()
         QString name = file_info.fileName();
 
         //判断pcd文件类型
-        pcl::PCLPointCloud2 cloud2;
-        Eigen::Vector4f origin;
-        Eigen::Quaternionf orientation;
-        int pcd_version;
-        int data_type;
-        unsigned int data_idx;
-        int offset = 0;
-        pcl::PCDReader rd;
-        rd.readHeader(file_name, cloud2, origin, orientation, pcd_version, data_type, data_idx, offset);
-        if (data_type == 0)
-        {
-            pcl::io::loadPCDFile(file_name_qt.toStdString(), *cloud_src);
-        }
-        else if (data_type == 2)
-        {
-            pcl::PCDReader reader;
-            reader.read<pcl::PointXYZ>(file_name_qt.toStdString(), *cloud_src);
-        }
+        //pcl::PCLPointCloud2 cloud2;
+        //Eigen::Vector4f origin;
+        //Eigen::Quaternionf orientation;
+        //int pcd_version;
+        //int data_type;
+        //unsigned int data_idx;
+        //int offset = 0;
+        //pcl::PCDReader rd;
+        //rd.readHeader(file_name, cloud2, origin, orientation, pcd_version, data_type, data_idx, offset);
+        //if (data_type == 0)
+        //{
+        //    pcl::io::loadPCDFile(file_name, *cloud_src);
+        //}
+        //else if (data_type == 2)
+        //{
+        //    pcl::PCDReader reader;
+        //    reader.read<pcl::PointXYZ>(file_name, *cloud_src);
+        //}
+        
+
+        pcl::io::loadPCDFile(file_name, *cloud_src);
         ui.lblFileName->setText(name);
 
         showCloudMsgs(cloud_src);
@@ -148,6 +156,7 @@ void PCLTool::outlierRemoval()
  */
 void PCLTool::narfKeypointExtraction()
 {
+    //参数
     float angular_resolution = pcl::deg2rad(ui.sboxAngularReslution->value());
     float noise_level = ui.sboxNoiseLevel->value();
     float min_range = ui.sboxMinRange->value();
@@ -156,23 +165,27 @@ void PCLTool::narfKeypointExtraction()
     float max_angle_height = pcl::deg2rad(360.0);
     float support_size = ui.sboxSupportSize->value();
     Eigen::Affine3f scene_sensor_pose(Eigen::Affine3f::Identity());
-    pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
+
     scene_sensor_pose = Eigen::Affine3f(Eigen::Translation3f(cloud_dst->sensor_origin_[0],
         cloud_dst->sensor_origin_[1],
         cloud_dst->sensor_origin_[2])) *
         Eigen::Affine3f(cloud_dst->sensor_orientation_);
+    //深度图
+    pcl::RangeImage::CoordinateFrame coordinate_frame = pcl::RangeImage::CAMERA_FRAME;
     range_image_ptr->createFromPointCloud(*cloud_dst, angular_resolution, max_angle_width, max_angle_height,
         scene_sensor_pose, coordinate_frame, noise_level, min_range, border_size);
     range_image_ptr->setUnseenToMaxRange();
+    //Narf检测对象
     pcl::NarfKeypoint narf_keypoint_detector(&range_image_border_extractor);
-    //pcl::RangeImage& range_image = *range_image_ptr;
     range_image_border_extractor.setRangeImage(&*range_image_ptr);
     narf_keypoint_detector.getParameters().support_size = support_size;
     narf_keypoint_detector.compute(keypoint_indices);
+    //narf特征点
     narf_keypoints_ptr->points.resize(keypoint_indices.points.size());
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> keypoints_color_handler(narf_keypoints_ptr, 0, 255, 0);
     for (size_t i = 0; i < keypoint_indices.points.size(); ++i)
         narf_keypoints_ptr->points[i].getVector3fMap() = range_image_ptr->points[keypoint_indices.points[i]].getVector3fMap();
+    //可视化
     QString num_keypoints_qstr = QString::number(keypoint_indices.points.size());
     ui.lblNumKeypoints->setText(num_keypoints_qstr);
     viewer->addPointCloud<pcl::PointXYZ>(narf_keypoints_ptr, keypoints_color_handler, "narf_keypoints");
@@ -185,20 +198,47 @@ void PCLTool::narfKeypointExtraction()
  */
 void PCLTool::siftKeypointExtraction()
 {
+    //参数
     float min_scale = ui.sboxMinScale->value();
     int n_octaves = ui.sboxOctaves->value();
     int n_scales_per_octave = ui.sboxOctaveScales->value();
     float min_contrast = ui.sboxMinContrast->value();
+    //sift特征点提取
     sift.setInputCloud(cloud_dst);
     sift.setSearchMethod(tree);
     sift.setScales(min_scale, n_octaves, n_scales_per_octave);
     sift.setMinimumContrast(min_contrast);
     sift.compute(sift_keypoints);
     pcl::copyPointCloud(sift_keypoints, *cloud_temp);
+    //可视化
     QString num_points_qstr = QString::number(cloud_temp->size());
     ui.lblNumKeypoints->setText(num_points_qstr);
     viewer->addPointCloud<pcl::PointXYZ>(cloud_temp, "sift_keypoints");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "sift_keypoints");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 0, 255, "sift_keypoints");
+    ui.qvtkWidget->update();
+}
+
+/**
+ *  SLOT:提取Harris特征点
+ */
+void PCLTool::harrisKeypointExtraction()
+{
+    //参数
+    float radius = ui.sboxRadius->value();
+    float radiusSearch = ui.sboxRadiusSearch->value();
+    //harris特征点提取
+    harris.setInputCloud(cloud_dst);
+    //harris.setNonMaxSupression(true);
+    harris.setRadius(radius);
+    harris.setRadiusSearch(radiusSearch);
+    harris.compute(*harris_keypoints_ptr);
+    pcl::copyPointCloud(*harris_keypoints_ptr, *cloud_temp);
+    //可视化
+    QString num_points_qstr = QString::number(cloud_temp->size());
+    ui.lblNumKeypoints->setText(num_points_qstr);
+    viewer->addPointCloud<pcl::PointXYZ>(cloud_temp, "harris_keypoints");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "harris_keypoints");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "harris_keypoints");
     ui.qvtkWidget->update();
 }

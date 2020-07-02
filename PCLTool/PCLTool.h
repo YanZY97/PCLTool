@@ -9,6 +9,7 @@
 #include <pcl/range_image/range_image.h>
 #include <pcl/keypoints/narf_keypoint.h>
 #include <pcl/keypoints/sift_keypoint.h>
+#include <pcl/keypoints/harris_3d.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/visualization/range_image_visualizer.h>
@@ -45,6 +46,8 @@ private:
     pcl::PointCloud<pcl::PointXYZ>::Ptr narf_keypoints_ptr;
     //sift关键点点云
     pcl::PointCloud<pcl::PointWithScale> sift_keypoints;
+    //harris关键点点云
+    pcl::PointCloud<pcl::PointXYZI>::Ptr harris_keypoints_ptr;
     //转换点云类型
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_temp;
     //kdTree
@@ -63,6 +66,9 @@ private:
     pcl::PointCloud<int> keypoint_indices;
     //SIFT关键点检测对象
     pcl::SIFTKeypoint<pcl::PointXYZ, pcl::PointWithScale> sift;
+    //Harris3D关键点检测对象
+    pcl::HarrisKeypoint3D<pcl::PointXYZ, pcl::PointXYZI, pcl::Normal> harris;
+
     void initialVtkWidget();
     void showCloudMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
 
@@ -71,4 +77,5 @@ private slots:
     void outlierRemoval();
     void narfKeypointExtraction();
     void siftKeypointExtraction();
+    void harrisKeypointExtraction();
 };
