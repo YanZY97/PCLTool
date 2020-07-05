@@ -16,6 +16,8 @@ PCLTool::PCLTool(QWidget *parent)
     //打开文件
     connect(ui.actionOpen, &QAction::triggered, this, &PCLTool::openFile);
 
+    //体素下采样
+    connect(ui.btnVoxelGrid, &QPushButton::clicked, this, &PCLTool::voxelGrid);
     //过滤离群点
     connect(ui.btnOutlierRemoval, &QPushButton::clicked, this, &PCLTool::outlierRemoval);
     //提取NARF特征点
@@ -36,13 +38,15 @@ PCLTool::PCLTool(QWidget *parent)
         });
     //显示原始点云
     connect(ui.btnShowSrc, &QPushButton::clicked, [=]() {
-        viewer->updatePointCloud(cloud_src, "cloud");
+        viewer->removePointCloud("cloud");
+        viewer->addPointCloud(cloud_src, "cloud");
         viewer->resetCamera();
         ui.qvtkWidget->update();
         });
     //显示处理后点云
     connect(ui.btnShowDst, &QPushButton::clicked, [=]() {
-        viewer->updatePointCloud(cloud_dst, "cloud");
+        viewer->removePointCloud("cloud");
+        viewer->addPointCloud(cloud_dst, "cloud");
         viewer->resetCamera();
         ui.qvtkWidget->update();
         });
@@ -130,10 +134,26 @@ void PCLTool::openFile()
         showCloudMsgs(cloud_src);
         *cloud_dst = *cloud_src;
 
-        viewer->updatePointCloud(cloud_src, "cloud");
+        viewer->removeAllPointClouds();
+        viewer->addPointCloud(cloud_src, "cloud");
         viewer->resetCamera();
         ui.qvtkWidget->update();
     }
+}
+
+/**
+ *  SLOT:下采样
+ */
+void PCLTool::voxelGrid()
+{
+    grid.setInputCloud(cloud_dst);
+    grid.setLeafSize(ui.sboxVoxelGridX->value(), ui.sboxVoxelGridY->value(), ui.sboxVoxelGridZ->value());
+    grid.filter(*cloud_dst);
+
+    showCloudMsgs(cloud_dst);
+    viewer->removePointCloud("cloud");
+    viewer->addPointCloud(cloud_dst, "cloud");
+    ui.qvtkWidget->update();
 }
 
 /**
@@ -145,9 +165,10 @@ void PCLTool::outlierRemoval()
     sor.setMeanK(ui.sboxMeank->value());
     sor.setStddevMulThresh(ui.sboxStdThresh->value());
     sor.filter(*cloud_dst);
-    showCloudMsgs(cloud_dst);
 
-    viewer->updatePointCloud(cloud_dst, "cloud");
+    showCloudMsgs(cloud_dst);
+    viewer->removePointCloud("cloud");
+    viewer->addPointCloud(cloud_dst, "cloud");
     ui.qvtkWidget->update();
 }
 
@@ -182,14 +203,15 @@ void PCLTool::narfKeypointExtraction()
     narf_keypoint_detector.compute(keypoint_indices);
     //narf特征点
     narf_keypoints_ptr->points.resize(keypoint_indices.points.size());
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> keypoints_color_handler(narf_keypoints_ptr, 0, 255, 0);
     for (size_t i = 0; i < keypoint_indices.points.size(); ++i)
         narf_keypoints_ptr->points[i].getVector3fMap() = range_image_ptr->points[keypoint_indices.points[i]].getVector3fMap();
     //可视化
     QString num_keypoints_qstr = QString::number(keypoint_indices.points.size());
     ui.lblNumKeypoints->setText(num_keypoints_qstr);
-    viewer->addPointCloud<pcl::PointXYZ>(narf_keypoints_ptr, keypoints_color_handler, "narf_keypoints");
+    viewer->removePointCloud("narf_keypoints");
+    viewer->addPointCloud<pcl::PointXYZ>(narf_keypoints_ptr, "narf_keypoints");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "narf_keypoints");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 255, 0, "narf_keypoints");
     ui.qvtkWidget->update();
 }
 
@@ -213,6 +235,7 @@ void PCLTool::siftKeypointExtraction()
     //可视化
     QString num_points_qstr = QString::number(cloud_temp->size());
     ui.lblNumKeypoints->setText(num_points_qstr);
+    viewer->removePointCloud("sift_keypoints");
     viewer->addPointCloud<pcl::PointXYZ>(cloud_temp, "sift_keypoints");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "sift_keypoints");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0, 0, 255, "sift_keypoints");
@@ -229,7 +252,6 @@ void PCLTool::harrisKeypointExtraction()
     float radiusSearch = ui.sboxRadiusSearch->value();
     //harris特征点提取
     harris.setInputCloud(cloud_dst);
-    //harris.setNonMaxSupression(true);
     harris.setRadius(radius);
     harris.setRadiusSearch(radiusSearch);
     harris.compute(*harris_keypoints_ptr);
@@ -237,6 +259,7 @@ void PCLTool::harrisKeypointExtraction()
     //可视化
     QString num_points_qstr = QString::number(cloud_temp->size());
     ui.lblNumKeypoints->setText(num_points_qstr);
+    viewer->removePointCloud("harris_keypoints");
     viewer->addPointCloud<pcl::PointXYZ>(cloud_temp, "harris_keypoints");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 7, "harris_keypoints");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 255, 0, 0, "harris_keypoints");

@@ -309,7 +309,7 @@
        <enum>QTabWidget::East</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="iconSize">
        <size>
@@ -335,51 +335,198 @@
          <number>5</number>
         </property>
         <item>
-         <layout class="QFormLayout" name="formLayout_2">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_7">
-            <property name="text">
-             <string>临近点数:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="sboxMeank">
-            <property name="value">
-             <number>50</number>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_8">
-            <property name="text">
-             <string>标准差倍数:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QDoubleSpinBox" name="sboxStdThresh">
-            <property name="decimals">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <double>3.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.100000000000000</double>
-            </property>
-            <property name="value">
-             <double>1.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QPushButton" name="btnOutlierRemoval">
-          <property name="text">
-           <string>移除离群点</string>
+         <widget class="QToolBox" name="toolBox_2">
+          <property name="currentIndex">
+           <number>1</number>
           </property>
+          <widget class="QWidget" name="page_1">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>222</width>
+             <height>511</height>
+            </rect>
+           </property>
+           <attribute name="label">
+            <string>移除离群点</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_7">
+            <property name="leftMargin">
+             <number>5</number>
+            </property>
+            <property name="topMargin">
+             <number>5</number>
+            </property>
+            <property name="rightMargin">
+             <number>5</number>
+            </property>
+            <property name="bottomMargin">
+             <number>5</number>
+            </property>
+            <item>
+             <layout class="QFormLayout" name="formLayout_2">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>临近点数:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QSpinBox" name="sboxMeank">
+                <property name="value">
+                 <number>50</number>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>标准差倍数:</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QDoubleSpinBox" name="sboxStdThresh">
+                <property name="decimals">
+                 <number>1</number>
+                </property>
+                <property name="maximum">
+                 <double>3.000000000000000</double>
+                </property>
+                <property name="singleStep">
+                 <double>0.100000000000000</double>
+                </property>
+                <property name="value">
+                 <double>1.000000000000000</double>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnOutlierRemoval">
+              <property name="text">
+               <string>移除离群点</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_2">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>222</width>
+             <height>511</height>
+            </rect>
+           </property>
+           <attribute name="label">
+            <string>体素下采样</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_8">
+            <property name="leftMargin">
+             <number>5</number>
+            </property>
+            <property name="topMargin">
+             <number>5</number>
+            </property>
+            <property name="rightMargin">
+             <number>5</number>
+            </property>
+            <property name="bottomMargin">
+             <number>5</number>
+            </property>
+            <item>
+             <widget class="QGroupBox" name="groupBox">
+              <property name="title">
+               <string>体素尺寸</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_9">
+               <property name="leftMargin">
+                <number>2</number>
+               </property>
+               <property name="topMargin">
+                <number>2</number>
+               </property>
+               <property name="rightMargin">
+                <number>2</number>
+               </property>
+               <property name="bottomMargin">
+                <number>2</number>
+               </property>
+               <item>
+                <layout class="QFormLayout" name="formLayout_6">
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="label_21">
+                   <property name="text">
+                    <string>  X  </string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QLabel" name="label_22">
+                   <property name="text">
+                    <string>  Y</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QLabel" name="label_23">
+                   <property name="text">
+                    <string>  Z</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <widget class="QDoubleSpinBox" name="sboxVoxelGridX">
+                   <property name="maximum">
+                    <double>100.000000000000000</double>
+                   </property>
+                   <property name="singleStep">
+                    <double>0.010000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>0.050000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="2" column="1">
+                  <widget class="QDoubleSpinBox" name="sboxVoxelGridY">
+                   <property name="singleStep">
+                    <double>0.010000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>0.050000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="1">
+                  <widget class="QDoubleSpinBox" name="sboxVoxelGridZ">
+                   <property name="singleStep">
+                    <double>0.010000000000000</double>
+                   </property>
+                   <property name="value">
+                    <double>0.050000000000000</double>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="btnVoxelGrid">
+              <property name="text">
+               <string>下采样</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -420,8 +567,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>222</width>
-             <height>525</height>
+             <width>209</width>
+             <height>195</height>
             </rect>
            </property>
            <attribute name="label">
@@ -561,8 +708,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>222</width>
-             <height>502</height>
+             <width>193</width>
+             <height>164</height>
             </rect>
            </property>
            <attribute name="label">
@@ -669,6 +816,14 @@
            </layout>
           </widget>
           <widget class="QWidget" name="pageHarrisPoints">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>222</width>
+             <height>502</height>
+            </rect>
+           </property>
            <attribute name="label">
             <string>Harris关键点</string>
            </attribute>

@@ -5,11 +5,13 @@
 #include <pcl/point_types.h> 
 #include <pcl/common/common.h>
 #include <pcl/features/normal_3d.h>
+#include <pcl/features/vfh.h>
 #include <pcl/features/range_image_border_extractor.h>
 #include <pcl/range_image/range_image.h>
 #include <pcl/keypoints/narf_keypoint.h>
 #include <pcl/keypoints/sift_keypoint.h>
 #include <pcl/keypoints/harris_3d.h>
+#include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/visualization/range_image_visualizer.h>
@@ -40,7 +42,7 @@ private:
 
     //原始点云数据
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_src;
-    //滤波后点云数据
+    //处理后点云数据
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_dst;
     //narf关键点点云
     pcl::PointCloud<pcl::PointXYZ>::Ptr narf_keypoints_ptr;
@@ -58,6 +60,8 @@ private:
     pcl::PointXYZ min_p, max_p;
     //点云可视化窗口
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+    //VoxelGrid下采样对象
+    pcl::VoxelGrid<pcl::PointXYZ> grid;
     //离群点滤波器对象
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
     //提取深度图边缘对象
@@ -74,6 +78,7 @@ private:
 
 private slots:
     void openFile();
+    void voxelGrid();
     void outlierRemoval();
     void narfKeypointExtraction();
     void siftKeypointExtraction();

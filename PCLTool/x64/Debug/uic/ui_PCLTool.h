@@ -71,12 +71,27 @@ public:
     QTabWidget *tabWidget;
     QWidget *tabOutlierRemoval;
     QVBoxLayout *verticalLayout;
+    QToolBox *toolBox_2;
+    QWidget *page_1;
+    QVBoxLayout *verticalLayout_7;
     QFormLayout *formLayout_2;
     QLabel *label_7;
     QSpinBox *sboxMeank;
     QLabel *label_8;
     QDoubleSpinBox *sboxStdThresh;
     QPushButton *btnOutlierRemoval;
+    QWidget *page_2;
+    QVBoxLayout *verticalLayout_8;
+    QGroupBox *groupBox;
+    QVBoxLayout *verticalLayout_9;
+    QFormLayout *formLayout_6;
+    QLabel *label_21;
+    QLabel *label_22;
+    QLabel *label_23;
+    QDoubleSpinBox *sboxVoxelGridX;
+    QDoubleSpinBox *sboxVoxelGridY;
+    QDoubleSpinBox *sboxVoxelGridZ;
+    QPushButton *btnVoxelGrid;
     QWidget *tabKeypoints;
     QVBoxLayout *verticalLayout_3;
     QToolBox *toolBox;
@@ -317,26 +332,36 @@ public:
         verticalLayout->setContentsMargins(11, 11, 11, 11);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(5, 5, 5, 5);
+        toolBox_2 = new QToolBox(tabOutlierRemoval);
+        toolBox_2->setObjectName(QString::fromUtf8("toolBox_2"));
+        page_1 = new QWidget();
+        page_1->setObjectName(QString::fromUtf8("page_1"));
+        page_1->setGeometry(QRect(0, 0, 222, 511));
+        verticalLayout_7 = new QVBoxLayout(page_1);
+        verticalLayout_7->setSpacing(6);
+        verticalLayout_7->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_7->setObjectName(QString::fromUtf8("verticalLayout_7"));
+        verticalLayout_7->setContentsMargins(5, 5, 5, 5);
         formLayout_2 = new QFormLayout();
         formLayout_2->setSpacing(6);
         formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
-        label_7 = new QLabel(tabOutlierRemoval);
+        label_7 = new QLabel(page_1);
         label_7->setObjectName(QString::fromUtf8("label_7"));
 
         formLayout_2->setWidget(0, QFormLayout::LabelRole, label_7);
 
-        sboxMeank = new QSpinBox(tabOutlierRemoval);
+        sboxMeank = new QSpinBox(page_1);
         sboxMeank->setObjectName(QString::fromUtf8("sboxMeank"));
         sboxMeank->setValue(50);
 
         formLayout_2->setWidget(0, QFormLayout::FieldRole, sboxMeank);
 
-        label_8 = new QLabel(tabOutlierRemoval);
+        label_8 = new QLabel(page_1);
         label_8->setObjectName(QString::fromUtf8("label_8"));
 
         formLayout_2->setWidget(1, QFormLayout::LabelRole, label_8);
 
-        sboxStdThresh = new QDoubleSpinBox(tabOutlierRemoval);
+        sboxStdThresh = new QDoubleSpinBox(page_1);
         sboxStdThresh->setObjectName(QString::fromUtf8("sboxStdThresh"));
         sboxStdThresh->setDecimals(1);
         sboxStdThresh->setMaximum(3.000000000000000);
@@ -346,12 +371,83 @@ public:
         formLayout_2->setWidget(1, QFormLayout::FieldRole, sboxStdThresh);
 
 
-        verticalLayout->addLayout(formLayout_2);
+        verticalLayout_7->addLayout(formLayout_2);
 
-        btnOutlierRemoval = new QPushButton(tabOutlierRemoval);
+        btnOutlierRemoval = new QPushButton(page_1);
         btnOutlierRemoval->setObjectName(QString::fromUtf8("btnOutlierRemoval"));
 
-        verticalLayout->addWidget(btnOutlierRemoval);
+        verticalLayout_7->addWidget(btnOutlierRemoval);
+
+        toolBox_2->addItem(page_1, QString::fromUtf8("\347\247\273\351\231\244\347\246\273\347\276\244\347\202\271"));
+        page_2 = new QWidget();
+        page_2->setObjectName(QString::fromUtf8("page_2"));
+        page_2->setGeometry(QRect(0, 0, 222, 511));
+        verticalLayout_8 = new QVBoxLayout(page_2);
+        verticalLayout_8->setSpacing(6);
+        verticalLayout_8->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_8->setObjectName(QString::fromUtf8("verticalLayout_8"));
+        verticalLayout_8->setContentsMargins(5, 5, 5, 5);
+        groupBox = new QGroupBox(page_2);
+        groupBox->setObjectName(QString::fromUtf8("groupBox"));
+        verticalLayout_9 = new QVBoxLayout(groupBox);
+        verticalLayout_9->setSpacing(6);
+        verticalLayout_9->setContentsMargins(11, 11, 11, 11);
+        verticalLayout_9->setObjectName(QString::fromUtf8("verticalLayout_9"));
+        verticalLayout_9->setContentsMargins(2, 2, 2, 2);
+        formLayout_6 = new QFormLayout();
+        formLayout_6->setSpacing(6);
+        formLayout_6->setObjectName(QString::fromUtf8("formLayout_6"));
+        label_21 = new QLabel(groupBox);
+        label_21->setObjectName(QString::fromUtf8("label_21"));
+
+        formLayout_6->setWidget(1, QFormLayout::LabelRole, label_21);
+
+        label_22 = new QLabel(groupBox);
+        label_22->setObjectName(QString::fromUtf8("label_22"));
+
+        formLayout_6->setWidget(2, QFormLayout::LabelRole, label_22);
+
+        label_23 = new QLabel(groupBox);
+        label_23->setObjectName(QString::fromUtf8("label_23"));
+
+        formLayout_6->setWidget(3, QFormLayout::LabelRole, label_23);
+
+        sboxVoxelGridX = new QDoubleSpinBox(groupBox);
+        sboxVoxelGridX->setObjectName(QString::fromUtf8("sboxVoxelGridX"));
+        sboxVoxelGridX->setMaximum(100.000000000000000);
+        sboxVoxelGridX->setSingleStep(0.010000000000000);
+        sboxVoxelGridX->setValue(0.050000000000000);
+
+        formLayout_6->setWidget(1, QFormLayout::FieldRole, sboxVoxelGridX);
+
+        sboxVoxelGridY = new QDoubleSpinBox(groupBox);
+        sboxVoxelGridY->setObjectName(QString::fromUtf8("sboxVoxelGridY"));
+        sboxVoxelGridY->setSingleStep(0.010000000000000);
+        sboxVoxelGridY->setValue(0.050000000000000);
+
+        formLayout_6->setWidget(2, QFormLayout::FieldRole, sboxVoxelGridY);
+
+        sboxVoxelGridZ = new QDoubleSpinBox(groupBox);
+        sboxVoxelGridZ->setObjectName(QString::fromUtf8("sboxVoxelGridZ"));
+        sboxVoxelGridZ->setSingleStep(0.010000000000000);
+        sboxVoxelGridZ->setValue(0.050000000000000);
+
+        formLayout_6->setWidget(3, QFormLayout::FieldRole, sboxVoxelGridZ);
+
+
+        verticalLayout_9->addLayout(formLayout_6);
+
+
+        verticalLayout_8->addWidget(groupBox);
+
+        btnVoxelGrid = new QPushButton(page_2);
+        btnVoxelGrid->setObjectName(QString::fromUtf8("btnVoxelGrid"));
+
+        verticalLayout_8->addWidget(btnVoxelGrid);
+
+        toolBox_2->addItem(page_2, QString::fromUtf8("\344\275\223\347\264\240\344\270\213\351\207\207\346\240\267"));
+
+        verticalLayout->addWidget(toolBox_2);
 
         tabWidget->addTab(tabOutlierRemoval, QString());
         tabKeypoints = new QWidget();
@@ -367,7 +463,7 @@ public:
         toolBox->setFrameShadow(QFrame::Sunken);
         pageNARFPoints = new QWidget();
         pageNARFPoints->setObjectName(QString::fromUtf8("pageNARFPoints"));
-        pageNARFPoints->setGeometry(QRect(0, 0, 222, 525));
+        pageNARFPoints->setGeometry(QRect(0, 0, 209, 195));
         verticalLayout_4 = new QVBoxLayout(pageNARFPoints);
         verticalLayout_4->setSpacing(6);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
@@ -450,7 +546,7 @@ public:
         toolBox->addItem(pageNARFPoints, QString::fromUtf8("NARF\345\205\263\351\224\256\347\202\271"));
         pageSIFTPoints = new QWidget();
         pageSIFTPoints->setObjectName(QString::fromUtf8("pageSIFTPoints"));
-        pageSIFTPoints->setGeometry(QRect(0, 0, 222, 502));
+        pageSIFTPoints->setGeometry(QRect(0, 0, 193, 164));
         verticalLayout_5 = new QVBoxLayout(pageSIFTPoints);
         verticalLayout_5->setSpacing(6);
         verticalLayout_5->setContentsMargins(11, 11, 11, 11);
@@ -520,6 +616,7 @@ public:
         toolBox->addItem(pageSIFTPoints, QString::fromUtf8("SIFT\345\205\263\351\224\256\347\202\271"));
         pageHarrisPoints = new QWidget();
         pageHarrisPoints->setObjectName(QString::fromUtf8("pageHarrisPoints"));
+        pageHarrisPoints->setGeometry(QRect(0, 0, 222, 502));
         verticalLayout_6 = new QVBoxLayout(pageHarrisPoints);
         verticalLayout_6->setSpacing(6);
         verticalLayout_6->setContentsMargins(11, 11, 11, 11);
@@ -596,7 +693,8 @@ public:
         QObject::connect(actionExit, SIGNAL(triggered()), PCLToolClass, SLOT(close()));
         QObject::connect(hSliderPointSize, SIGNAL(valueChanged(int)), label_6, SLOT(setNum(int)));
 
-        tabWidget->setCurrentIndex(1);
+        tabWidget->setCurrentIndex(0);
+        toolBox_2->setCurrentIndex(1);
         toolBox->setCurrentIndex(2);
         toolBox->layout()->setSpacing(0);
 
@@ -630,6 +728,13 @@ public:
         label_7->setText(QApplication::translate("PCLToolClass", "\344\270\264\350\277\221\347\202\271\346\225\260:", nullptr));
         label_8->setText(QApplication::translate("PCLToolClass", "\346\240\207\345\207\206\345\267\256\345\200\215\346\225\260:", nullptr));
         btnOutlierRemoval->setText(QApplication::translate("PCLToolClass", "\347\247\273\351\231\244\347\246\273\347\276\244\347\202\271", nullptr));
+        toolBox_2->setItemText(toolBox_2->indexOf(page_1), QApplication::translate("PCLToolClass", "\347\247\273\351\231\244\347\246\273\347\276\244\347\202\271", nullptr));
+        groupBox->setTitle(QApplication::translate("PCLToolClass", "\344\275\223\347\264\240\345\260\272\345\257\270", nullptr));
+        label_21->setText(QApplication::translate("PCLToolClass", "  X  ", nullptr));
+        label_22->setText(QApplication::translate("PCLToolClass", "  Y", nullptr));
+        label_23->setText(QApplication::translate("PCLToolClass", "  Z", nullptr));
+        btnVoxelGrid->setText(QApplication::translate("PCLToolClass", "\344\270\213\351\207\207\346\240\267", nullptr));
+        toolBox_2->setItemText(toolBox_2->indexOf(page_2), QApplication::translate("PCLToolClass", "\344\275\223\347\264\240\344\270\213\351\207\207\346\240\267", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tabOutlierRemoval), QApplication::translate("PCLToolClass", "\346\273\244\346\263\242", nullptr));
         label_9->setText(QApplication::translate("PCLToolClass", "\350\247\222\345\272\246\345\210\206\350\276\250\347\216\207", nullptr));
         label_10->setText(QApplication::translate("PCLToolClass", "\346\267\261\345\272\246\350\267\235\347\246\273\346\237\245\350\257\242\345\215\212\345\276\204", nullptr));
