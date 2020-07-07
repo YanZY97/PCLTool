@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
+#include <QDebug>
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h> 
 #include <pcl/common/common.h>
@@ -78,6 +79,7 @@ private:
 
 private slots:
     void openFile();
+    void openMeshFile();
     void voxelGrid();
     void outlierRemoval();
     void narfKeypointExtraction();

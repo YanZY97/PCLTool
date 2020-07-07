@@ -40,6 +40,7 @@ class Ui_PCLToolClass
 public:
     QAction *actionOpen;
     QAction *actionExit;
+    QAction *actionOpenPLY_OBJ_file;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
     QVBoxLayout *layoutDisplay;
@@ -144,6 +145,8 @@ public:
         actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
         actionExit = new QAction(PCLToolClass);
         actionExit->setObjectName(QString::fromUtf8("actionExit"));
+        actionOpenPLY_OBJ_file = new QAction(PCLToolClass);
+        actionOpenPLY_OBJ_file->setObjectName(QString::fromUtf8("actionOpenPLY_OBJ_file"));
         centralWidget = new QWidget(PCLToolClass);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
@@ -414,6 +417,7 @@ public:
 
         sboxVoxelGridX = new QDoubleSpinBox(groupBox);
         sboxVoxelGridX->setObjectName(QString::fromUtf8("sboxVoxelGridX"));
+        sboxVoxelGridX->setDecimals(3);
         sboxVoxelGridX->setMaximum(100.000000000000000);
         sboxVoxelGridX->setSingleStep(0.010000000000000);
         sboxVoxelGridX->setValue(0.050000000000000);
@@ -422,6 +426,7 @@ public:
 
         sboxVoxelGridY = new QDoubleSpinBox(groupBox);
         sboxVoxelGridY->setObjectName(QString::fromUtf8("sboxVoxelGridY"));
+        sboxVoxelGridY->setDecimals(3);
         sboxVoxelGridY->setSingleStep(0.010000000000000);
         sboxVoxelGridY->setValue(0.050000000000000);
 
@@ -429,6 +434,7 @@ public:
 
         sboxVoxelGridZ = new QDoubleSpinBox(groupBox);
         sboxVoxelGridZ->setObjectName(QString::fromUtf8("sboxVoxelGridZ"));
+        sboxVoxelGridZ->setDecimals(3);
         sboxVoxelGridZ->setSingleStep(0.010000000000000);
         sboxVoxelGridZ->setValue(0.050000000000000);
 
@@ -686,6 +692,7 @@ public:
 
         menuBar->addAction(menu->menuAction());
         menu->addAction(actionOpen);
+        menu->addAction(actionOpenPLY_OBJ_file);
         menu->addSeparator();
         menu->addAction(actionExit);
 
@@ -707,6 +714,7 @@ public:
         PCLToolClass->setWindowTitle(QApplication::translate("PCLToolClass", "PCLTool", nullptr));
         actionOpen->setText(QApplication::translate("PCLToolClass", "Open", nullptr));
         actionExit->setText(QApplication::translate("PCLToolClass", "Exit", nullptr));
+        actionOpenPLY_OBJ_file->setText(QApplication::translate("PCLToolClass", "Open PLY/OBJ file", nullptr));
         groupBoxValues->setTitle(QApplication::translate("PCLToolClass", "\347\202\271\344\272\221\344\277\241\346\201\257", nullptr));
         label_2->setText(QApplication::translate("PCLToolClass", "\347\202\271\346\225\260\351\207\217:", nullptr));
         label_1->setText(QApplication::translate("PCLToolClass", "\346\226\207\344\273\266\345\220\215:", nullptr));

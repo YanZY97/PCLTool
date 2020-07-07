@@ -88,6 +88,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="mesh2pcd.cpp" />
     <QtRcc Include="PCLTool.qrc" />
     <QtUic Include="PCLTool.ui" />
     <QtMoc Include="PCLTool.h" />
@@ -95,6 +96,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="mesh2pcd.h" />
     <ClInclude Include="x64\Debug\uic\ui_PCLTool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

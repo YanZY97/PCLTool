@@ -482,6 +482,9 @@
                  </item>
                  <item row="1" column="1">
                   <widget class="QDoubleSpinBox" name="sboxVoxelGridX">
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
                    <property name="maximum">
                     <double>100.000000000000000</double>
                    </property>
@@ -495,6 +498,9 @@
                  </item>
                  <item row="2" column="1">
                   <widget class="QDoubleSpinBox" name="sboxVoxelGridY">
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
                    <property name="singleStep">
                     <double>0.010000000000000</double>
                    </property>
@@ -505,6 +511,9 @@
                  </item>
                  <item row="3" column="1">
                   <widget class="QDoubleSpinBox" name="sboxVoxelGridZ">
+                   <property name="decimals">
+                    <number>3</number>
+                   </property>
                    <property name="singleStep">
                     <double>0.010000000000000</double>
                    </property>
@@ -914,6 +923,7 @@
      <string>File</string>
     </property>
     <addaction name="actionOpen"/>
+    <addaction name="actionOpenPLY_OBJ_file"/>
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
@@ -936,6 +946,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionOpenPLY_OBJ_file">
+   <property name="text">
+    <string>Open PLY/OBJ file</string>
    </property>
   </action>
  </widget>

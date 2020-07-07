@@ -1,5 +1,6 @@
 #include "PCLTool.h"
 #include "vtkAutoInit.h"
+#include "mesh2pcd.h"
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -15,7 +16,8 @@ PCLTool::PCLTool(QWidget *parent)
     initialVtkWidget();
     //打开文件
     connect(ui.actionOpen, &QAction::triggered, this, &PCLTool::openFile);
-
+    //打开ply/obj文件
+    connect(ui.actionOpenPLY_OBJ_file, &QAction::triggered, this, &PCLTool::openMeshFile);
     //体素下采样
     connect(ui.btnVoxelGrid, &QPushButton::clicked, this, &PCLTool::voxelGrid);
     //过滤离群点
@@ -127,7 +129,7 @@ void PCLTool::openFile()
         //    reader.read<pcl::PointXYZ>(file_name, *cloud_src);
         //}
         
-
+        qDebug() << file_name_qt;
         pcl::io::loadPCDFile(file_name, *cloud_src);
         ui.lblFileName->setText(name);
 
@@ -139,6 +141,34 @@ void PCLTool::openFile()
         viewer->resetCamera();
         ui.qvtkWidget->update();
     }
+}
+
+/**
+ *  SLOT:打开ply/obj文件
+ */
+void PCLTool::openMeshFile()
+{
+    QString file_name_qt = QFileDialog::getOpenFileName(this, tr("Open MeshFile"), ".", tr("Mesh Files(*.ply *.obj)"));
+    QFileInfo file_info(file_name_qt);
+    if (!file_name_qt.isEmpty())
+    {
+        std::string file_name = file_name_qt.toStdString();
+        QString name = file_info.fileName();
+        qDebug() << file_name_qt;
+        Mesh2PCD* transformer = new Mesh2PCD();
+        *cloud_src = *transformer->Transform(file_name);
+        delete transformer;
+
+        showCloudMsgs(cloud_src);
+        *cloud_dst = *cloud_src;
+
+        viewer->removeAllPointClouds();
+        viewer->addPointCloud(cloud_src, "cloud");
+        viewer->resetCamera();
+        ui.qvtkWidget->update();
+    }
+    
+
 }
 
 /**
