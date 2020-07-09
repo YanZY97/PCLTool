@@ -14,21 +14,24 @@ Mesh2PCD::~Mesh2PCD()
 {
 }
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr Mesh2PCD::Transform(std::string file_path)
+/**
+ *   À´Ô´£ºhttps://github.com/PointCloudLibrary/pcl/blob/master/tools/mesh_sampling.cpp
+ */
+pcl::PointCloud<pcl::PointXYZ>::Ptr Mesh2PCD::Transform(std::string file_path, float leaf_size)
 {
 	int SAMPLE_POINTS_ = 100000;
 	bool write_normals = false;
 	bool write_colors = false;
-	float leaf_size = 0.001f;
+	//float leaf_size = 0.001f;
 	std::string extention = file_path.substr(file_path.find_last_of(".") + 1);
 	std::transform(extention.begin(), extention.end(), extention.begin(), ::tolower);
-	if (file_path.substr(file_path.find_last_of(".") + 1) == "ply")
+	if (extention == "ply")
 	{
 		pcl::PolygonMesh mesh;
 		pcl::io::loadPolygonFilePLY(file_path.c_str(), mesh);
 		pcl::io::mesh2vtk(mesh, polydata1);
 	}
-	else if (file_path.substr(file_path.find_last_of(".") + 1) == "obj")
+	else if (extention == "obj")
 	{
 		objReaderQuery->SetFileName(file_path.c_str());
 		objReaderQuery->Update();

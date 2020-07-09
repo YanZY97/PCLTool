@@ -6,6 +6,9 @@
 #include <pcl/point_types.h> 
 #include <pcl/common/common.h>
 #include <pcl/features/normal_3d.h>
+#include <pcl/features/normal_3d_omp.h>
+#include <pcl/features/fpfh.h>
+#include <pcl/features/fpfh_omp.h>
 #include <pcl/features/vfh.h>
 #include <pcl/features/range_image_border_extractor.h>
 #include <pcl/range_image/range_image.h>
@@ -16,6 +19,9 @@
 #include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/visualization/range_image_visualizer.h>
+#include <pcl/registration/ia_ransac.h>
+#include <pcl/registration/ndt.h>
+#include <pcl/registration/icp.h>
 #include "ui_PCLTool.h"
 
 namespace pcl
@@ -42,9 +48,9 @@ private:
     Ui::PCLToolClass ui;
 
     //原始点云数据
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_src;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_src_ptr;
     //处理后点云数据
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_dst;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_dst_ptr;
     //narf关键点点云
     pcl::PointCloud<pcl::PointXYZ>::Ptr narf_keypoints_ptr;
     //sift关键点点云
@@ -52,9 +58,9 @@ private:
     //harris关键点点云
     pcl::PointCloud<pcl::PointXYZI>::Ptr harris_keypoints_ptr;
     //转换点云类型
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_temp;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_temp_ptr;
     //kdTree
-    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree;
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr kdtree;
     //深度图
     pcl::RangeImage::Ptr range_image_ptr;
     //点云最大最小坐标
@@ -73,16 +79,33 @@ private:
     pcl::SIFTKeypoint<pcl::PointXYZ, pcl::PointWithScale> sift;
     //Harris3D关键点检测对象
     pcl::HarrisKeypoint3D<pcl::PointXYZ, pcl::PointXYZI, pcl::Normal> harris;
+    //配准目标点云
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tgt_ptr;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tgt_ptr_grid1;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_tgt_ptr_grid2;
+    //待配准点云
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_input_ptr;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_input_ptr_grid1;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_input_ptr_grid2;
+    //配准结果点云
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_registrated_ptr;
 
     void initialVtkWidget();
     void showCloudMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud);
+    void showRegMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud2);
 
 private slots:
     void openFile();
     void openMeshFile();
+
     void voxelGrid();
     void outlierRemoval();
+
     void narfKeypointExtraction();
     void siftKeypointExtraction();
     void harrisKeypointExtraction();
+
+    void loadCloud1();
+    void loadCloud2();
+    void doRegistration();
 };
