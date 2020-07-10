@@ -109,9 +109,9 @@ void PCLTool::showCloudMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud)
     float x_length = max_p.x - min_p.x;
     float y_length = max_p.y - min_p.y;
     float z_length = max_p.z - min_p.z;
-    QString x_length_qstr = QString("%1").arg(x_length);
-    QString y_length_qstr = QString("%1").arg(y_length);
-    QString z_length_qstr = QString("%1").arg(z_length);
+    QString x_length_qstr = QString("%1").arg(x_length * 1000);
+    QString y_length_qstr = QString("%1").arg(y_length * 1000);
+    QString z_length_qstr = QString("%1").arg(z_length * 1000);
     QString num_points_qstr = QString::number(input_cloud->size());
     ui.lblNumPoints->setText(num_points_qstr);
     ui.lblXlength->setText(x_length_qstr);
@@ -126,19 +126,28 @@ void PCLTool::showCloudMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud)
 void PCLTool::showRegMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud2)
 {
     pcl::getMinMax3D(*input_cloud, min_p, max_p);
-    float x1_length = max_p.x - min_p.x;
-    float y1_length = max_p.y - min_p.y;
-    float z1_length = max_p.z - min_p.z;
+    float x1_length = (max_p.x - min_p.x) * 1000;
+    float y1_length = (max_p.y - min_p.y) * 1000;
+    float z1_length = (max_p.z - min_p.z) * 1000;
     QString x1_length_qstr = QString("%1").arg(x1_length);
     QString y1_length_qstr = QString("%1").arg(y1_length);
     QString z1_length_qstr = QString("%1").arg(z1_length);
     pcl::getMinMax3D(*input_cloud2, min_p, max_p);
-    float x2_length = max_p.x - min_p.x;
-    float y2_length = max_p.y - min_p.y;
-    float z2_length = max_p.z - min_p.z;
+    float x2_length = (max_p.x - min_p.x) * 1000;
+    float y2_length = (max_p.y - min_p.y) * 1000;
+    float z2_length = (max_p.z - min_p.z) * 1000;
     QString x2_length_qstr = QString("%1").arg(x2_length);
     QString y2_length_qstr = QString("%1").arg(y2_length);
     QString z2_length_qstr = QString("%1").arg(z2_length);
+
+    QString xError = QString("%1").arg(fabsf(x1_length - x2_length));
+    QString yError = QString("%1").arg(fabsf(y1_length - y2_length));
+    QString zError = QString("%1").arg(fabsf(z1_length - z2_length));
+    QString error_qstr = QString("%1").arg(fabsf(x1_length - x2_length) + fabsf(y1_length - y2_length) + fabsf(z1_length - z2_length));
+
+    ui.lblErrX->setText(xError);
+    ui.lblErrY->setText(yError);
+    ui.lblErrZ->setText(zError);
 
     ui.lblTgtSizeX->setText(x1_length_qstr);
     ui.lblTgtSizeY->setText(y1_length_qstr);
@@ -147,6 +156,8 @@ void PCLTool::showRegMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::
     ui.lblResSizeX->setText(x2_length_qstr);
     ui.lblResSizeY->setText(y2_length_qstr);
     ui.lblResSizeZ->setText(z2_length_qstr);
+
+    ui.lblRegError->setText(error_qstr);
 }
 
 
@@ -385,6 +396,10 @@ void PCLTool::loadCloud1()
         grid.filter(*cloud_tgt_ptr_grid2);
         QString num_points_qstr2 = QString::number(cloud_tgt_ptr_grid2->size());
         ui.lblNumPointsCloud1Grid2->setText(num_points_qstr2);
+
+        ui.lblNumErr1->setText(QString::number(labs(cloud_tgt_ptr->size() - cloud_input_ptr->size())));
+        ui.lblNumErrGrid1->setText(QString::number(labs(cloud_tgt_ptr_grid1->size() - cloud_input_ptr_grid1->size())));
+        ui.lblNumErrGrid2->setText(QString::number(labs(cloud_tgt_ptr_grid2->size() - cloud_input_ptr_grid2->size())));
         
         pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud1_color(cloud_tgt_ptr, 255, 0, 0);
         viewer->removePointCloud("cloud1");
@@ -432,6 +447,10 @@ void PCLTool::loadCloud2()
         QString num_points_qstr2 = QString::number(cloud_input_ptr_grid2->size());
         ui.lblNumPointsCloud2Grid2->setText(num_points_qstr2);
 
+        ui.lblNumErr1->setText(QString::number(labs(cloud_tgt_ptr->size() - cloud_input_ptr->size())));
+        ui.lblNumErrGrid1->setText(QString::number(labs(cloud_tgt_ptr_grid1->size() - cloud_input_ptr_grid1->size())));
+        ui.lblNumErrGrid2->setText(QString::number(labs(cloud_tgt_ptr_grid2->size() - cloud_input_ptr_grid2->size())));
+
         pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud2_color(cloud_input_ptr, 0, 255, 0);
         viewer->removePointCloud("cloud2");
         viewer->addPointCloud(cloud_input_ptr, cloud2_color, "cloud2");
@@ -448,12 +467,55 @@ void PCLTool::doRegistration()
     float ndt_leaf_size = ui.sboxNDTLeafSize->value();
     float icp_leaf_size = ui.sboxICPLeafSize->value();
 
+    //计算质心
+    pcl::PointCloud<pcl::PointXYZ>::Ptr centroid_point_input(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr centroid_point_tgt(new pcl::PointCloud<pcl::PointXYZ>);
+    Eigen::Vector4f centroid_input;
+    Eigen::Vector4f centroid_tgt;
+    pcl::compute3DCentroid(*cloud_input_ptr, centroid_input);
+    pcl::compute3DCentroid(*cloud_tgt_ptr, centroid_tgt);
+    centroid_point_input->points.resize(2);
+    centroid_point_input->points[0].x = centroid_input[0];
+    centroid_point_input->points[0].y = centroid_input[1];
+    centroid_point_input->points[0].z = centroid_input[2];
+    centroid_point_tgt->points.resize(2);
+    centroid_point_tgt->points[0].x = centroid_tgt[0];
+    centroid_point_tgt->points[0].y = centroid_tgt[1];
+    centroid_point_tgt->points[0].z = centroid_tgt[2];
+    pcl::getMinMax3D(*cloud_input_ptr, min_p, max_p);
+    centroid_point_input->points[1].x = (max_p.x + min_p.x) / 2;
+    centroid_point_input->points[1].y = (max_p.y + min_p.y) / 2;
+    centroid_point_input->points[1].z = (max_p.z + min_p.z) / 2;
+    pcl::getMinMax3D(*cloud_tgt_ptr, min_p, max_p);
+    centroid_point_tgt->points[1].x = (max_p.x + min_p.x) / 2;
+    centroid_point_tgt->points[1].y = (max_p.y + min_p.y) / 2;
+    centroid_point_tgt->points[1].z = (max_p.z + min_p.z) / 2;
+    Eigen::Vector3f input_vec(centroid_point_input->points[0].x - centroid_point_input->points[1].x,
+        centroid_point_input->points[0].y - centroid_point_input->points[1].y,
+        centroid_point_input->points[0].z - centroid_point_input->points[1].z);
+    Eigen::Vector3f tgt_vec(centroid_point_tgt->points[0].x - centroid_point_tgt->points[1].x,
+        centroid_point_tgt->points[0].y - centroid_point_tgt->points[1].y,
+        centroid_point_tgt->points[0].z - centroid_point_tgt->points[1].z);
+
+    Eigen::Matrix3f rotMatrix;
+    rotMatrix = Eigen::Quaternionf::FromTwoVectors(input_vec, tgt_vec);
+
+    //初始变换矩阵
+    Eigen::AngleAxisf init_rotationX(rotMatrix.eulerAngles(2, 1, 0)[2], Eigen::Vector3f::UnitX());
+    Eigen::AngleAxisf init_rotationY(rotMatrix.eulerAngles(2, 1, 0)[1], Eigen::Vector3f::UnitY());
+    Eigen::AngleAxisf init_rotationZ(rotMatrix.eulerAngles(2, 1, 0)[0], Eigen::Vector3f::UnitZ());
+    Eigen::Vector3f init_transtion(centroid_point_tgt->points[0].x - centroid_point_input->points[0].x,
+        centroid_point_tgt->points[0].y - centroid_point_input->points[0].y,
+        centroid_point_tgt->points[0].z - centroid_point_input->points[0].z);
+    Eigen::Vector4f extra(0, 0, 0, 1);
+    Eigen::Matrix4f init_guess;
+    init_guess << rotMatrix, init_transtion, extra.transpose();
+    
     pcl::VoxelGrid<pcl::PointXYZ> voxel_grid_ndt;
     voxel_grid_ndt.setLeafSize(ndt_leaf_size, ndt_leaf_size, ndt_leaf_size);
     voxel_grid_ndt.setInputCloud(cloud_input_ptr);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_ndt_o2(new pcl::PointCloud<pcl::PointXYZ>);
     voxel_grid_ndt.filter(*cloud_ndt_o2);
-
     //ndt粗配准
     pcl::NormalDistributionsTransform<pcl::PointXYZ, pcl::PointXYZ> ndt;
     ndt.setTransformationEpsilon(ui.sboxEpsilon->value());
@@ -462,7 +524,7 @@ void PCLTool::doRegistration()
     ndt.setMaximumIterations(ui.sboxIterations->value());
     ndt.setInputSource(cloud_ndt_o2);
     ndt.setInputTarget(cloud_tgt_ptr);
-    ndt.align(*cloud_registrated_ptr);
+    ndt.align(*cloud_registrated_ptr, init_guess);
     pcl::transformPointCloud(*cloud_input_ptr, *cloud_registrated_ptr, ndt.getFinalTransformation());
 
     pcl::VoxelGrid<pcl::PointXYZ> voxel_grid_icp;
@@ -498,8 +560,20 @@ void PCLTool::doRegistration()
 
     //可视化
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud_registrated_color(cloud_registrated_ptr, 0, 0, 255);
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud_registrated_color_icp(cloud_registrated_ptr_icp, 200, 0, 255);
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud_registrated_color_icp(cloud_registrated_ptr_icp, 230, 230, 250);
 
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> centroid_input_color(centroid_point_input, 0, 120, 0);
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> centroid_tgt_color(centroid_point_tgt, 120, 0, 0);
+    //质心和中心
+    viewer->removePointCloud("centroid_input");
+    viewer->addPointCloud(centroid_point_input, centroid_input_color, "centroid_input");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 8, "centroid_input");
+    
+    viewer->removePointCloud("centroid_tgt");
+    viewer->addPointCloud(centroid_point_tgt, centroid_tgt_color, "centroid_tgt");
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 8, "centroid_tgt");
+    
+    //粗配准和精配准结果
     viewer->removePointCloud("cloud_registrated_ndt");
     viewer->addPointCloud(cloud_registrated_ptr, cloud_registrated_color, "cloud_registrated_ndt");
     

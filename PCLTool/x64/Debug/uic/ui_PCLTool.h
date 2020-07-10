@@ -72,10 +72,13 @@ public:
     QLabel *label_46;
     QLabel *label_27;
     QLabel *lblNumPointsCloud2Grid2;
+    QLabel *label_50;
     QLabel *lblNumPointsCloud2;
     QLabel *lblResSizeY;
-    QLabel *label_50;
+    QLabel *label_52;
+    QLabel *lblTgtSizeZ;
     QLabel *label_43;
+    QLabel *lblResSizeZ;
     QLabel *label_44;
     QLabel *label_40;
     QLabel *lblNumPointsCloud1Grid1;
@@ -84,9 +87,18 @@ public:
     QLabel *lblNumPointsCloud1Grid2;
     QLabel *label_34;
     QLabel *label_39;
-    QLabel *lblTgtSizeZ;
-    QLabel *label_52;
-    QLabel *lblResSizeZ;
+    QLabel *label_41;
+    QLabel *lblNumErr1;
+    QLabel *lblNumErrGrid1;
+    QLabel *lblNumErrGrid2;
+    QLabel *lblErrX;
+    QLabel *lblErrY;
+    QLabel *lblErrZ;
+    QLabel *label_48;
+    QGroupBox *groupBox_4;
+    QFormLayout *formLayout_7;
+    QLabel *label_38;
+    QLabel *lblRegError;
     QSpacerItem *verticalSpacer;
     QFrame *line_2;
     QFormLayout *layoutBtnShow;
@@ -205,7 +217,7 @@ public:
     {
         if (PCLToolClass->objectName().isEmpty())
             PCLToolClass->setObjectName(QString::fromUtf8("PCLToolClass"));
-        PCLToolClass->resize(1162, 674);
+        PCLToolClass->resize(1162, 686);
         actionOpen = new QAction(PCLToolClass);
         actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
         actionExit = new QAction(PCLToolClass);
@@ -380,6 +392,11 @@ public:
 
         gridLayout->addWidget(lblNumPointsCloud2Grid2, 3, 2, 1, 1);
 
+        label_50 = new QLabel(centralWidget);
+        label_50->setObjectName(QString::fromUtf8("label_50"));
+
+        gridLayout->addWidget(label_50, 6, 0, 1, 1);
+
         lblNumPointsCloud2 = new QLabel(centralWidget);
         lblNumPointsCloud2->setObjectName(QString::fromUtf8("lblNumPointsCloud2"));
 
@@ -390,15 +407,25 @@ public:
 
         gridLayout->addWidget(lblResSizeY, 6, 2, 1, 1);
 
-        label_50 = new QLabel(centralWidget);
-        label_50->setObjectName(QString::fromUtf8("label_50"));
+        label_52 = new QLabel(centralWidget);
+        label_52->setObjectName(QString::fromUtf8("label_52"));
 
-        gridLayout->addWidget(label_50, 6, 0, 1, 1);
+        gridLayout->addWidget(label_52, 7, 0, 1, 1);
+
+        lblTgtSizeZ = new QLabel(centralWidget);
+        lblTgtSizeZ->setObjectName(QString::fromUtf8("lblTgtSizeZ"));
+
+        gridLayout->addWidget(lblTgtSizeZ, 7, 1, 1, 1);
 
         label_43 = new QLabel(centralWidget);
         label_43->setObjectName(QString::fromUtf8("label_43"));
 
         gridLayout->addWidget(label_43, 4, 1, 1, 1);
+
+        lblResSizeZ = new QLabel(centralWidget);
+        lblResSizeZ->setObjectName(QString::fromUtf8("lblResSizeZ"));
+
+        gridLayout->addWidget(lblResSizeZ, 7, 2, 1, 1);
 
         label_44 = new QLabel(centralWidget);
         label_44->setObjectName(QString::fromUtf8("label_44"));
@@ -440,23 +467,67 @@ public:
 
         gridLayout->addWidget(label_39, 2, 0, 1, 1);
 
-        lblTgtSizeZ = new QLabel(centralWidget);
-        lblTgtSizeZ->setObjectName(QString::fromUtf8("lblTgtSizeZ"));
+        label_41 = new QLabel(centralWidget);
+        label_41->setObjectName(QString::fromUtf8("label_41"));
 
-        gridLayout->addWidget(lblTgtSizeZ, 7, 1, 1, 1);
+        gridLayout->addWidget(label_41, 0, 3, 1, 1);
 
-        label_52 = new QLabel(centralWidget);
-        label_52->setObjectName(QString::fromUtf8("label_52"));
+        lblNumErr1 = new QLabel(centralWidget);
+        lblNumErr1->setObjectName(QString::fromUtf8("lblNumErr1"));
 
-        gridLayout->addWidget(label_52, 7, 0, 1, 1);
+        gridLayout->addWidget(lblNumErr1, 1, 3, 1, 1);
 
-        lblResSizeZ = new QLabel(centralWidget);
-        lblResSizeZ->setObjectName(QString::fromUtf8("lblResSizeZ"));
+        lblNumErrGrid1 = new QLabel(centralWidget);
+        lblNumErrGrid1->setObjectName(QString::fromUtf8("lblNumErrGrid1"));
 
-        gridLayout->addWidget(lblResSizeZ, 7, 2, 1, 1);
+        gridLayout->addWidget(lblNumErrGrid1, 2, 3, 1, 1);
+
+        lblNumErrGrid2 = new QLabel(centralWidget);
+        lblNumErrGrid2->setObjectName(QString::fromUtf8("lblNumErrGrid2"));
+
+        gridLayout->addWidget(lblNumErrGrid2, 3, 3, 1, 1);
+
+        lblErrX = new QLabel(centralWidget);
+        lblErrX->setObjectName(QString::fromUtf8("lblErrX"));
+
+        gridLayout->addWidget(lblErrX, 5, 3, 1, 1);
+
+        lblErrY = new QLabel(centralWidget);
+        lblErrY->setObjectName(QString::fromUtf8("lblErrY"));
+
+        gridLayout->addWidget(lblErrY, 6, 3, 1, 1);
+
+        lblErrZ = new QLabel(centralWidget);
+        lblErrZ->setObjectName(QString::fromUtf8("lblErrZ"));
+
+        gridLayout->addWidget(lblErrZ, 7, 3, 1, 1);
+
+        label_48 = new QLabel(centralWidget);
+        label_48->setObjectName(QString::fromUtf8("label_48"));
+
+        gridLayout->addWidget(label_48, 4, 3, 1, 1);
 
 
         layoutDisplay->addLayout(gridLayout);
+
+        groupBox_4 = new QGroupBox(centralWidget);
+        groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
+        formLayout_7 = new QFormLayout(groupBox_4);
+        formLayout_7->setSpacing(6);
+        formLayout_7->setContentsMargins(11, 11, 11, 11);
+        formLayout_7->setObjectName(QString::fromUtf8("formLayout_7"));
+        label_38 = new QLabel(groupBox_4);
+        label_38->setObjectName(QString::fromUtf8("label_38"));
+
+        formLayout_7->setWidget(0, QFormLayout::LabelRole, label_38);
+
+        lblRegError = new QLabel(groupBox_4);
+        lblRegError->setObjectName(QString::fromUtf8("lblRegError"));
+
+        formLayout_7->setWidget(0, QFormLayout::FieldRole, lblRegError);
+
+
+        layoutDisplay->addWidget(groupBox_4);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
@@ -502,7 +573,7 @@ public:
 
         layoutDisplay->addLayout(layoutBtnShow);
 
-        layoutDisplay->setStretch(3, 1);
+        layoutDisplay->setStretch(4, 1);
 
         horizontalLayout->addLayout(layoutDisplay);
 
@@ -531,7 +602,7 @@ public:
         toolBox_2->setObjectName(QString::fromUtf8("toolBox_2"));
         page_1 = new QWidget();
         page_1->setObjectName(QString::fromUtf8("page_1"));
-        page_1->setGeometry(QRect(0, 0, 224, 511));
+        page_1->setGeometry(QRect(0, 0, 224, 523));
         verticalLayout_7 = new QVBoxLayout(page_1);
         verticalLayout_7->setSpacing(6);
         verticalLayout_7->setContentsMargins(11, 11, 11, 11);
@@ -814,7 +885,7 @@ public:
         toolBox->addItem(pageSIFTPoints, QString::fromUtf8("SIFT\345\205\263\351\224\256\347\202\271"));
         pageHarrisPoints = new QWidget();
         pageHarrisPoints->setObjectName(QString::fromUtf8("pageHarrisPoints"));
-        pageHarrisPoints->setGeometry(QRect(0, 0, 224, 502));
+        pageHarrisPoints->setGeometry(QRect(0, 0, 224, 514));
         verticalLayout_6 = new QVBoxLayout(pageHarrisPoints);
         verticalLayout_6->setSpacing(6);
         verticalLayout_6->setContentsMargins(11, 11, 11, 11);
@@ -952,7 +1023,7 @@ public:
         sboxIterations = new QSpinBox(groupBox_2);
         sboxIterations->setObjectName(QString::fromUtf8("sboxIterations"));
         sboxIterations->setMaximum(1000);
-        sboxIterations->setValue(1000);
+        sboxIterations->setValue(100);
         sboxIterations->setDisplayIntegerBase(10);
 
         formLayout_9->setWidget(2, QFormLayout::FieldRole, sboxIterations);
@@ -1160,10 +1231,13 @@ public:
         label_46->setText(QApplication::translate("PCLToolClass", "X\346\226\271\345\220\221\345\260\272\345\257\270", nullptr));
         label_27->setText(QApplication::translate("PCLToolClass", "\345\276\205\345\214\271\351\205\215\347\202\271\344\272\221", nullptr));
         lblNumPointsCloud2Grid2->setText(QString());
+        label_50->setText(QApplication::translate("PCLToolClass", "Y\346\226\271\345\220\221\345\260\272\345\257\270", nullptr));
         lblNumPointsCloud2->setText(QString());
         lblResSizeY->setText(QString());
-        label_50->setText(QApplication::translate("PCLToolClass", "Y\346\226\271\345\220\221\345\260\272\345\257\270", nullptr));
+        label_52->setText(QApplication::translate("PCLToolClass", "Z\346\226\271\345\220\221\345\260\272\345\257\270", nullptr));
+        lblTgtSizeZ->setText(QString());
         label_43->setText(QApplication::translate("PCLToolClass", "\347\233\256\346\240\207\347\202\271\344\272\221", nullptr));
+        lblResSizeZ->setText(QString());
         label_44->setText(QApplication::translate("PCLToolClass", "\345\214\271\351\205\215\345\220\216\347\202\271\344\272\221", nullptr));
         label_40->setText(QApplication::translate("PCLToolClass", "\344\270\213\351\207\207\346\240\2672", nullptr));
         lblNumPointsCloud1Grid1->setText(QString());
@@ -1172,9 +1246,17 @@ public:
         lblNumPointsCloud1Grid2->setText(QString());
         label_34->setText(QApplication::translate("PCLToolClass", "\345\216\237\345\247\213\346\225\260\351\207\217", nullptr));
         label_39->setText(QApplication::translate("PCLToolClass", "\344\270\213\351\207\207\346\240\2671", nullptr));
-        lblTgtSizeZ->setText(QString());
-        label_52->setText(QApplication::translate("PCLToolClass", "Z\346\226\271\345\220\221\345\260\272\345\257\270", nullptr));
-        lblResSizeZ->setText(QString());
+        label_41->setText(QApplication::translate("PCLToolClass", "\350\257\257\345\267\256", nullptr));
+        lblNumErr1->setText(QString());
+        lblNumErrGrid1->setText(QString());
+        lblNumErrGrid2->setText(QString());
+        lblErrX->setText(QString());
+        lblErrY->setText(QString());
+        lblErrZ->setText(QString());
+        label_48->setText(QApplication::translate("PCLToolClass", "\350\257\257\345\267\256  ", nullptr));
+        groupBox_4->setTitle(QApplication::translate("PCLToolClass", "\351\205\215\345\207\206\347\273\223\346\236\234", nullptr));
+        label_38->setText(QApplication::translate("PCLToolClass", "\346\200\273\350\257\257\345\267\256(mm)", nullptr));
+        lblRegError->setText(QString());
         btnShowSrc->setText(QApplication::translate("PCLToolClass", "\346\230\276\347\244\272\345\216\237\345\247\213\347\202\271\344\272\221", nullptr));
         btnShowDst->setText(QApplication::translate("PCLToolClass", "\346\230\276\347\244\272\345\244\204\347\220\206\345\220\216\347\202\271\344\272\221", nullptr));
         btnRmPointClouds->setText(QApplication::translate("PCLToolClass", "\346\270\205\351\231\244\346\230\276\347\244\272", nullptr));
