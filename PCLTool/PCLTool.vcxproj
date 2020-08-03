@@ -94,6 +94,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="mesh2pcd.cpp" />
+    <ClCompile Include="RSCamera.cpp" />
     <QtRcc Include="PCLTool.qrc" />
     <QtUic Include="PCLTool.ui" />
     <QtMoc Include="PCLTool.h" />
@@ -102,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mesh2pcd.h" />
+    <ClInclude Include="RSCamera.h" />
     <ClInclude Include="x64\Debug\uic\ui_PCLTool.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

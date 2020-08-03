@@ -22,6 +22,8 @@
 #include <pcl/registration/ia_ransac.h>
 #include <pcl/registration/ndt.h>
 #include <pcl/registration/icp.h>
+#include <OpenNI.h>
+#include <librealsense2/rs.hpp>
 #include "ui_PCLTool.h"
 
 namespace pcl
@@ -47,8 +49,11 @@ public:
 private:
     Ui::PCLToolClass ui;
 
+    rs2::pipeline pipe;
+
     //原始点云数据
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_src_ptr;
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_rs_ptr;
     //处理后点云数据
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_dst_ptr;
     //narf关键点点云
@@ -67,6 +72,7 @@ private:
     pcl::PointXYZ min_p, max_p;
     //点云可视化窗口
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer2;
     //VoxelGrid下采样对象
     pcl::VoxelGrid<pcl::PointXYZ> grid;
     //离群点滤波器对象

@@ -44,12 +44,18 @@
     <ClCompile Include="mesh2pcd.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RSCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="x64\Debug\uic\ui_PCLTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mesh2pcd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RSCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

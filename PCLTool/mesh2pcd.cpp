@@ -17,9 +17,9 @@ Mesh2PCD::~Mesh2PCD()
 /**
  *   À´Ô´£ºhttps://github.com/PointCloudLibrary/pcl/blob/master/tools/mesh_sampling.cpp
  */
-pcl::PointCloud<pcl::PointXYZ>::Ptr Mesh2PCD::Transform(std::string file_path, float leaf_size)
+pcl::PointCloud<pcl::PointXYZ>::Ptr Mesh2PCD::Transform(std::string file_path, float leaf_size, int points)
 {
-	int SAMPLE_POINTS_ = 100000;
+	int SAMPLE_POINTS_ = points;
 	bool write_normals = false;
 	bool write_colors = false;
 	//float leaf_size = 0.001f;

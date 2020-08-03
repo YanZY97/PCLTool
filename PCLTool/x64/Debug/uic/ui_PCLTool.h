@@ -44,6 +44,9 @@ public:
     QAction *actionOpenPLY_OBJ_file;
     QWidget *centralWidget;
     QHBoxLayout *horizontalLayout;
+    QTabWidget *tabWidget_2;
+    QWidget *tab;
+    QHBoxLayout *horizontalLayout_2;
     QVBoxLayout *layoutDisplay;
     QGroupBox *groupBoxValues;
     QVBoxLayout *verticalLayout_2;
@@ -174,6 +177,8 @@ public:
     QFormLayout *formLayout_8;
     QLabel *label_28;
     QDoubleSpinBox *sboxRegLeafSize;
+    QLabel *label_42;
+    QSpinBox *sboxLoadPoints;
     QPushButton *btnChooseCloud1;
     QLabel *lblCloud1Name;
     QPushButton *btnChooseCloud2;
@@ -208,6 +213,12 @@ public:
     QLabel *label_24;
     QLabel *lblRegTime;
     QPushButton *btnRegistration;
+    QWidget *tab_2;
+    QHBoxLayout *horizontalLayout_3;
+    QVBoxLayout *verticalLayout_11;
+    QPushButton *btnConnectDevice;
+    QPushButton *btnGetOneFrameCloud;
+    QVTKWidget *qvtkWidget_2;
     QMenuBar *menuBar;
     QMenu *menu;
     QToolBar *mainToolBar;
@@ -217,7 +228,7 @@ public:
     {
         if (PCLToolClass->objectName().isEmpty())
             PCLToolClass->setObjectName(QString::fromUtf8("PCLToolClass"));
-        PCLToolClass->resize(1162, 686);
+        PCLToolClass->resize(1162, 729);
         actionOpen = new QAction(PCLToolClass);
         actionOpen->setObjectName(QString::fromUtf8("actionOpen"));
         actionExit = new QAction(PCLToolClass);
@@ -235,10 +246,19 @@ public:
         horizontalLayout->setSpacing(6);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setContentsMargins(0, 0, 0, 0);
+        tabWidget_2 = new QTabWidget(centralWidget);
+        tabWidget_2->setObjectName(QString::fromUtf8("tabWidget_2"));
+        tab = new QWidget();
+        tab->setObjectName(QString::fromUtf8("tab"));
+        horizontalLayout_2 = new QHBoxLayout(tab);
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         layoutDisplay = new QVBoxLayout();
         layoutDisplay->setSpacing(7);
         layoutDisplay->setObjectName(QString::fromUtf8("layoutDisplay"));
-        groupBoxValues = new QGroupBox(centralWidget);
+        groupBoxValues = new QGroupBox(tab);
         groupBoxValues->setObjectName(QString::fromUtf8("groupBoxValues"));
         verticalLayout_2 = new QVBoxLayout(groupBoxValues);
         verticalLayout_2->setSpacing(6);
@@ -333,7 +353,7 @@ public:
         layoutSliderPSize = new QGridLayout();
         layoutSliderPSize->setSpacing(6);
         layoutSliderPSize->setObjectName(QString::fromUtf8("layoutSliderPSize"));
-        hSliderPointSize = new QSlider(centralWidget);
+        hSliderPointSize = new QSlider(tab);
         hSliderPointSize->setObjectName(QString::fromUtf8("hSliderPointSize"));
         hSliderPointSize->setMinimum(1);
         hSliderPointSize->setMaximum(5);
@@ -341,12 +361,12 @@ public:
 
         layoutSliderPSize->addWidget(hSliderPointSize, 0, 1, 1, 1);
 
-        label = new QLabel(centralWidget);
+        label = new QLabel(tab);
         label->setObjectName(QString::fromUtf8("label"));
 
         layoutSliderPSize->addWidget(label, 0, 0, 1, 1);
 
-        label_6 = new QLabel(centralWidget);
+        label_6 = new QLabel(tab);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
         layoutSliderPSize->addWidget(label_6, 0, 2, 1, 1);
@@ -357,152 +377,152 @@ public:
         gridLayout = new QGridLayout();
         gridLayout->setSpacing(6);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        lblTgtSizeX = new QLabel(centralWidget);
+        lblTgtSizeX = new QLabel(tab);
         lblTgtSizeX->setObjectName(QString::fromUtf8("lblTgtSizeX"));
 
         gridLayout->addWidget(lblTgtSizeX, 5, 1, 1, 1);
 
-        lblNumPointsCloud1 = new QLabel(centralWidget);
+        lblNumPointsCloud1 = new QLabel(tab);
         lblNumPointsCloud1->setObjectName(QString::fromUtf8("lblNumPointsCloud1"));
 
         gridLayout->addWidget(lblNumPointsCloud1, 1, 1, 1, 1);
 
-        lblResSizeX = new QLabel(centralWidget);
+        lblResSizeX = new QLabel(tab);
         lblResSizeX->setObjectName(QString::fromUtf8("lblResSizeX"));
 
         gridLayout->addWidget(lblResSizeX, 5, 2, 1, 1);
 
-        lblTgtSizeY = new QLabel(centralWidget);
+        lblTgtSizeY = new QLabel(tab);
         lblTgtSizeY->setObjectName(QString::fromUtf8("lblTgtSizeY"));
 
         gridLayout->addWidget(lblTgtSizeY, 6, 1, 1, 1);
 
-        label_46 = new QLabel(centralWidget);
+        label_46 = new QLabel(tab);
         label_46->setObjectName(QString::fromUtf8("label_46"));
 
         gridLayout->addWidget(label_46, 5, 0, 1, 1);
 
-        label_27 = new QLabel(centralWidget);
+        label_27 = new QLabel(tab);
         label_27->setObjectName(QString::fromUtf8("label_27"));
 
         gridLayout->addWidget(label_27, 0, 2, 1, 1);
 
-        lblNumPointsCloud2Grid2 = new QLabel(centralWidget);
+        lblNumPointsCloud2Grid2 = new QLabel(tab);
         lblNumPointsCloud2Grid2->setObjectName(QString::fromUtf8("lblNumPointsCloud2Grid2"));
 
         gridLayout->addWidget(lblNumPointsCloud2Grid2, 3, 2, 1, 1);
 
-        label_50 = new QLabel(centralWidget);
+        label_50 = new QLabel(tab);
         label_50->setObjectName(QString::fromUtf8("label_50"));
 
         gridLayout->addWidget(label_50, 6, 0, 1, 1);
 
-        lblNumPointsCloud2 = new QLabel(centralWidget);
+        lblNumPointsCloud2 = new QLabel(tab);
         lblNumPointsCloud2->setObjectName(QString::fromUtf8("lblNumPointsCloud2"));
 
         gridLayout->addWidget(lblNumPointsCloud2, 1, 2, 1, 1);
 
-        lblResSizeY = new QLabel(centralWidget);
+        lblResSizeY = new QLabel(tab);
         lblResSizeY->setObjectName(QString::fromUtf8("lblResSizeY"));
 
         gridLayout->addWidget(lblResSizeY, 6, 2, 1, 1);
 
-        label_52 = new QLabel(centralWidget);
+        label_52 = new QLabel(tab);
         label_52->setObjectName(QString::fromUtf8("label_52"));
 
         gridLayout->addWidget(label_52, 7, 0, 1, 1);
 
-        lblTgtSizeZ = new QLabel(centralWidget);
+        lblTgtSizeZ = new QLabel(tab);
         lblTgtSizeZ->setObjectName(QString::fromUtf8("lblTgtSizeZ"));
 
         gridLayout->addWidget(lblTgtSizeZ, 7, 1, 1, 1);
 
-        label_43 = new QLabel(centralWidget);
+        label_43 = new QLabel(tab);
         label_43->setObjectName(QString::fromUtf8("label_43"));
 
         gridLayout->addWidget(label_43, 4, 1, 1, 1);
 
-        lblResSizeZ = new QLabel(centralWidget);
+        lblResSizeZ = new QLabel(tab);
         lblResSizeZ->setObjectName(QString::fromUtf8("lblResSizeZ"));
 
         gridLayout->addWidget(lblResSizeZ, 7, 2, 1, 1);
 
-        label_44 = new QLabel(centralWidget);
+        label_44 = new QLabel(tab);
         label_44->setObjectName(QString::fromUtf8("label_44"));
 
         gridLayout->addWidget(label_44, 4, 2, 1, 1);
 
-        label_40 = new QLabel(centralWidget);
+        label_40 = new QLabel(tab);
         label_40->setObjectName(QString::fromUtf8("label_40"));
 
         gridLayout->addWidget(label_40, 3, 0, 1, 1);
 
-        lblNumPointsCloud1Grid1 = new QLabel(centralWidget);
+        lblNumPointsCloud1Grid1 = new QLabel(tab);
         lblNumPointsCloud1Grid1->setObjectName(QString::fromUtf8("lblNumPointsCloud1Grid1"));
 
         gridLayout->addWidget(lblNumPointsCloud1Grid1, 2, 1, 1, 1);
 
-        lblNumPointsCloud2Grid1 = new QLabel(centralWidget);
+        lblNumPointsCloud2Grid1 = new QLabel(tab);
         lblNumPointsCloud2Grid1->setObjectName(QString::fromUtf8("lblNumPointsCloud2Grid1"));
 
         gridLayout->addWidget(lblNumPointsCloud2Grid1, 2, 2, 1, 1);
 
-        label_26 = new QLabel(centralWidget);
+        label_26 = new QLabel(tab);
         label_26->setObjectName(QString::fromUtf8("label_26"));
 
         gridLayout->addWidget(label_26, 0, 1, 1, 1);
 
-        lblNumPointsCloud1Grid2 = new QLabel(centralWidget);
+        lblNumPointsCloud1Grid2 = new QLabel(tab);
         lblNumPointsCloud1Grid2->setObjectName(QString::fromUtf8("lblNumPointsCloud1Grid2"));
 
         gridLayout->addWidget(lblNumPointsCloud1Grid2, 3, 1, 1, 1);
 
-        label_34 = new QLabel(centralWidget);
+        label_34 = new QLabel(tab);
         label_34->setObjectName(QString::fromUtf8("label_34"));
 
         gridLayout->addWidget(label_34, 1, 0, 1, 1);
 
-        label_39 = new QLabel(centralWidget);
+        label_39 = new QLabel(tab);
         label_39->setObjectName(QString::fromUtf8("label_39"));
 
         gridLayout->addWidget(label_39, 2, 0, 1, 1);
 
-        label_41 = new QLabel(centralWidget);
+        label_41 = new QLabel(tab);
         label_41->setObjectName(QString::fromUtf8("label_41"));
 
         gridLayout->addWidget(label_41, 0, 3, 1, 1);
 
-        lblNumErr1 = new QLabel(centralWidget);
+        lblNumErr1 = new QLabel(tab);
         lblNumErr1->setObjectName(QString::fromUtf8("lblNumErr1"));
 
         gridLayout->addWidget(lblNumErr1, 1, 3, 1, 1);
 
-        lblNumErrGrid1 = new QLabel(centralWidget);
+        lblNumErrGrid1 = new QLabel(tab);
         lblNumErrGrid1->setObjectName(QString::fromUtf8("lblNumErrGrid1"));
 
         gridLayout->addWidget(lblNumErrGrid1, 2, 3, 1, 1);
 
-        lblNumErrGrid2 = new QLabel(centralWidget);
+        lblNumErrGrid2 = new QLabel(tab);
         lblNumErrGrid2->setObjectName(QString::fromUtf8("lblNumErrGrid2"));
 
         gridLayout->addWidget(lblNumErrGrid2, 3, 3, 1, 1);
 
-        lblErrX = new QLabel(centralWidget);
+        lblErrX = new QLabel(tab);
         lblErrX->setObjectName(QString::fromUtf8("lblErrX"));
 
         gridLayout->addWidget(lblErrX, 5, 3, 1, 1);
 
-        lblErrY = new QLabel(centralWidget);
+        lblErrY = new QLabel(tab);
         lblErrY->setObjectName(QString::fromUtf8("lblErrY"));
 
         gridLayout->addWidget(lblErrY, 6, 3, 1, 1);
 
-        lblErrZ = new QLabel(centralWidget);
+        lblErrZ = new QLabel(tab);
         lblErrZ->setObjectName(QString::fromUtf8("lblErrZ"));
 
         gridLayout->addWidget(lblErrZ, 7, 3, 1, 1);
 
-        label_48 = new QLabel(centralWidget);
+        label_48 = new QLabel(tab);
         label_48->setObjectName(QString::fromUtf8("label_48"));
 
         gridLayout->addWidget(label_48, 4, 3, 1, 1);
@@ -510,7 +530,7 @@ public:
 
         layoutDisplay->addLayout(gridLayout);
 
-        groupBox_4 = new QGroupBox(centralWidget);
+        groupBox_4 = new QGroupBox(tab);
         groupBox_4->setObjectName(QString::fromUtf8("groupBox_4"));
         formLayout_7 = new QFormLayout(groupBox_4);
         formLayout_7->setSpacing(6);
@@ -533,7 +553,7 @@ public:
 
         layoutDisplay->addItem(verticalSpacer);
 
-        line_2 = new QFrame(centralWidget);
+        line_2 = new QFrame(tab);
         line_2->setObjectName(QString::fromUtf8("line_2"));
         line_2->setFrameShape(QFrame::HLine);
         line_2->setFrameShadow(QFrame::Sunken);
@@ -544,22 +564,22 @@ public:
         layoutBtnShow->setSpacing(6);
         layoutBtnShow->setObjectName(QString::fromUtf8("layoutBtnShow"));
         layoutBtnShow->setVerticalSpacing(7);
-        btnShowSrc = new QPushButton(centralWidget);
+        btnShowSrc = new QPushButton(tab);
         btnShowSrc->setObjectName(QString::fromUtf8("btnShowSrc"));
 
         layoutBtnShow->setWidget(0, QFormLayout::LabelRole, btnShowSrc);
 
-        btnShowDst = new QPushButton(centralWidget);
+        btnShowDst = new QPushButton(tab);
         btnShowDst->setObjectName(QString::fromUtf8("btnShowDst"));
 
         layoutBtnShow->setWidget(0, QFormLayout::FieldRole, btnShowDst);
 
-        btnRmPointClouds = new QPushButton(centralWidget);
+        btnRmPointClouds = new QPushButton(tab);
         btnRmPointClouds->setObjectName(QString::fromUtf8("btnRmPointClouds"));
 
         layoutBtnShow->setWidget(1, QFormLayout::LabelRole, btnRmPointClouds);
 
-        btnResetCamera = new QPushButton(centralWidget);
+        btnResetCamera = new QPushButton(tab);
         btnResetCamera->setObjectName(QString::fromUtf8("btnResetCamera"));
         btnResetCamera->setEnabled(true);
         QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Fixed);
@@ -575,9 +595,9 @@ public:
 
         layoutDisplay->setStretch(4, 1);
 
-        horizontalLayout->addLayout(layoutDisplay);
+        horizontalLayout_2->addLayout(layoutDisplay);
 
-        qvtkWidget = new QVTKWidget(centralWidget);
+        qvtkWidget = new QVTKWidget(tab);
         qvtkWidget->setObjectName(QString::fromUtf8("qvtkWidget"));
         QSizePolicy sizePolicy2(QSizePolicy::Preferred, QSizePolicy::Preferred);
         sizePolicy2.setHorizontalStretch(0);
@@ -585,9 +605,9 @@ public:
         sizePolicy2.setHeightForWidth(qvtkWidget->sizePolicy().hasHeightForWidth());
         qvtkWidget->setSizePolicy(sizePolicy2);
 
-        horizontalLayout->addWidget(qvtkWidget);
+        horizontalLayout_2->addWidget(qvtkWidget);
 
-        tabWidget = new QTabWidget(centralWidget);
+        tabWidget = new QTabWidget(tab);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
         tabWidget->setTabPosition(QTabWidget::East);
         tabWidget->setIconSize(QSize(20, 20));
@@ -602,7 +622,7 @@ public:
         toolBox_2->setObjectName(QString::fromUtf8("toolBox_2"));
         page_1 = new QWidget();
         page_1->setObjectName(QString::fromUtf8("page_1"));
-        page_1->setGeometry(QRect(0, 0, 224, 523));
+        page_1->setGeometry(QRect(0, 0, 156, 102));
         verticalLayout_7 = new QVBoxLayout(page_1);
         verticalLayout_7->setSpacing(6);
         verticalLayout_7->setContentsMargins(11, 11, 11, 11);
@@ -885,7 +905,7 @@ public:
         toolBox->addItem(pageSIFTPoints, QString::fromUtf8("SIFT\345\205\263\351\224\256\347\202\271"));
         pageHarrisPoints = new QWidget();
         pageHarrisPoints->setObjectName(QString::fromUtf8("pageHarrisPoints"));
-        pageHarrisPoints->setGeometry(QRect(0, 0, 224, 514));
+        pageHarrisPoints->setGeometry(QRect(0, 0, 194, 102));
         verticalLayout_6 = new QVBoxLayout(pageHarrisPoints);
         verticalLayout_6->setSpacing(6);
         verticalLayout_6->setContentsMargins(11, 11, 11, 11);
@@ -946,7 +966,7 @@ public:
         label_28 = new QLabel(tabRegistration);
         label_28->setObjectName(QString::fromUtf8("label_28"));
 
-        formLayout_8->setWidget(0, QFormLayout::LabelRole, label_28);
+        formLayout_8->setWidget(1, QFormLayout::LabelRole, label_28);
 
         sboxRegLeafSize = new QDoubleSpinBox(tabRegistration);
         sboxRegLeafSize->setObjectName(QString::fromUtf8("sboxRegLeafSize"));
@@ -954,7 +974,20 @@ public:
         sboxRegLeafSize->setSingleStep(0.001000000000000);
         sboxRegLeafSize->setValue(0.001000000000000);
 
-        formLayout_8->setWidget(0, QFormLayout::FieldRole, sboxRegLeafSize);
+        formLayout_8->setWidget(1, QFormLayout::FieldRole, sboxRegLeafSize);
+
+        label_42 = new QLabel(tabRegistration);
+        label_42->setObjectName(QString::fromUtf8("label_42"));
+
+        formLayout_8->setWidget(0, QFormLayout::LabelRole, label_42);
+
+        sboxLoadPoints = new QSpinBox(tabRegistration);
+        sboxLoadPoints->setObjectName(QString::fromUtf8("sboxLoadPoints"));
+        sboxLoadPoints->setMaximum(100000000);
+        sboxLoadPoints->setSingleStep(1000);
+        sboxLoadPoints->setValue(1000000);
+
+        formLayout_8->setWidget(0, QFormLayout::FieldRole, sboxLoadPoints);
 
 
         verticalLayout_12->addLayout(formLayout_8);
@@ -1130,7 +1163,7 @@ public:
         sboxICPLeafSize->setObjectName(QString::fromUtf8("sboxICPLeafSize"));
         sboxICPLeafSize->setDecimals(3);
         sboxICPLeafSize->setSingleStep(0.001000000000000);
-        sboxICPLeafSize->setValue(0.005000000000000);
+        sboxICPLeafSize->setValue(0.010000000000000);
 
         formLayout_10->setWidget(0, QFormLayout::FieldRole, sboxICPLeafSize);
 
@@ -1167,9 +1200,43 @@ public:
         verticalLayout_10->setStretch(2, 1);
         tabWidget->addTab(tabRegistration, QString());
 
-        horizontalLayout->addWidget(tabWidget);
+        horizontalLayout_2->addWidget(tabWidget);
 
-        horizontalLayout->setStretch(1, 1);
+        horizontalLayout_2->setStretch(1, 1);
+        tabWidget_2->addTab(tab, QString());
+        tab_2 = new QWidget();
+        tab_2->setObjectName(QString::fromUtf8("tab_2"));
+        horizontalLayout_3 = new QHBoxLayout(tab_2);
+        horizontalLayout_3->setSpacing(6);
+        horizontalLayout_3->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        verticalLayout_11 = new QVBoxLayout();
+        verticalLayout_11->setSpacing(6);
+        verticalLayout_11->setObjectName(QString::fromUtf8("verticalLayout_11"));
+        btnConnectDevice = new QPushButton(tab_2);
+        btnConnectDevice->setObjectName(QString::fromUtf8("btnConnectDevice"));
+
+        verticalLayout_11->addWidget(btnConnectDevice);
+
+        btnGetOneFrameCloud = new QPushButton(tab_2);
+        btnGetOneFrameCloud->setObjectName(QString::fromUtf8("btnGetOneFrameCloud"));
+        btnGetOneFrameCloud->setEnabled(false);
+
+        verticalLayout_11->addWidget(btnGetOneFrameCloud);
+
+
+        horizontalLayout_3->addLayout(verticalLayout_11);
+
+        qvtkWidget_2 = new QVTKWidget(tab_2);
+        qvtkWidget_2->setObjectName(QString::fromUtf8("qvtkWidget_2"));
+
+        horizontalLayout_3->addWidget(qvtkWidget_2);
+
+        horizontalLayout_3->setStretch(1, 1);
+        tabWidget_2->addTab(tab_2, QString());
+
+        horizontalLayout->addWidget(tabWidget_2);
+
         PCLToolClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(PCLToolClass);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -1194,6 +1261,7 @@ public:
         QObject::connect(actionExit, SIGNAL(triggered()), PCLToolClass, SLOT(close()));
         QObject::connect(hSliderPointSize, SIGNAL(valueChanged(int)), label_6, SLOT(setNum(int)));
 
+        tabWidget_2->setCurrentIndex(1);
         tabWidget->setCurrentIndex(2);
         toolBox_2->setCurrentIndex(0);
         toolBox->setCurrentIndex(2);
@@ -1291,6 +1359,7 @@ public:
         toolBox->setItemText(toolBox->indexOf(pageHarrisPoints), QApplication::translate("PCLToolClass", "Harris\345\205\263\351\224\256\347\202\271", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tabKeypoints), QApplication::translate("PCLToolClass", "\346\217\220\345\217\226\345\205\263\351\224\256\347\202\271", nullptr));
         label_28->setText(QApplication::translate("PCLToolClass", "\344\270\213\351\207\207\346\240\267\344\275\223\347\264\240\345\244\247\345\260\217", nullptr));
+        label_42->setText(QApplication::translate("PCLToolClass", "\351\207\207\346\240\267\347\202\271\346\225\260\351\207\217", nullptr));
         btnChooseCloud1->setText(QApplication::translate("PCLToolClass", "\351\200\211\346\213\251\347\233\256\346\240\207\347\202\271\344\272\221", nullptr));
         lblCloud1Name->setText(QApplication::translate("PCLToolClass", "\350\257\267\351\200\211\346\213\251\345\210\235\345\247\213\347\202\271\344\272\221", nullptr));
         btnChooseCloud2->setText(QApplication::translate("PCLToolClass", "\351\200\211\346\213\251\350\276\223\345\205\245\347\202\271\344\272\221", nullptr));
@@ -1310,6 +1379,10 @@ public:
         lblRegTime->setText(QString());
         btnRegistration->setText(QApplication::translate("PCLToolClass", "\351\205\215\345\207\206", nullptr));
         tabWidget->setTabText(tabWidget->indexOf(tabRegistration), QApplication::translate("PCLToolClass", "\344\270\244\347\202\271\344\272\221\351\205\215\345\207\206", nullptr));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab), QApplication::translate("PCLToolClass", "Tab 1", nullptr));
+        btnConnectDevice->setText(QApplication::translate("PCLToolClass", "\350\277\236\346\216\245\347\233\270\346\234\272", nullptr));
+        btnGetOneFrameCloud->setText(QApplication::translate("PCLToolClass", "\350\216\267\345\217\226\347\202\271\344\272\221", nullptr));
+        tabWidget_2->setTabText(tabWidget_2->indexOf(tab_2), QApplication::translate("PCLToolClass", "Tab 2", nullptr));
         menu->setTitle(QApplication::translate("PCLToolClass", "File", nullptr));
     } // retranslateUi
 

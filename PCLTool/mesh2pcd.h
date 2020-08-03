@@ -17,7 +17,7 @@ class Mesh2PCD
 public:
 	Mesh2PCD();
 	~Mesh2PCD();
-	pcl::PointCloud<pcl::PointXYZ>::Ptr Transform(std::string file_path, float leaf_size);
+	pcl::PointCloud<pcl::PointXYZ>::Ptr Transform(std::string file_path, float leaf_size, int points);
 private:
 	void uniform_sampling(vtkSmartPointer<vtkPolyData> polydata, std::size_t n_samples, bool calc_normal, bool calc_color, 
 		pcl::PointCloud<pcl::PointXYZRGBNormal>& cloud_out);

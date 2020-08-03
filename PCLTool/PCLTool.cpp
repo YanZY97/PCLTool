@@ -1,6 +1,7 @@
 #include "PCLTool.h"
 #include "vtkAutoInit.h"
 #include "mesh2pcd.h"
+#include "RSCamera.h"
 
 VTK_MODULE_INIT(vtkRenderingOpenGL2);
 VTK_MODULE_INIT(vtkInteractionStyle);
@@ -30,6 +31,7 @@ PCLTool::PCLTool(QWidget *parent)
     //清除显示
     connect(ui.btnRmPointClouds, &QPushButton::clicked, [=]() {
         viewer->removeAllPointClouds();
+        ui.qvtkWidget->update();
         });
     //重置镜头
     connect(ui.btnResetCamera, &QPushButton::clicked, [=]() {
@@ -47,6 +49,26 @@ PCLTool::PCLTool(QWidget *parent)
         viewer->removePointCloud("cloud");
         viewer->addPointCloud(cloud_dst_ptr, "cloud");
         ui.qvtkWidget->update();
+        });
+
+    connect(ui.btnConnectDevice, &QPushButton::clicked, [=]() {
+        try
+        {
+            pipe.start();
+            ui.btnGetOneFrameCloud->setEnabled(true);
+        }
+        catch (const std::exception&)
+        {
+            ui.btnGetOneFrameCloud->setEnabled(false);
+        }
+        });
+
+    connect(ui.btnGetOneFrameCloud, &QPushButton::clicked, [=]() {
+        RSCamera* rs = new RSCamera();
+        cloud_rs_ptr = rs->getPointCloud(pipe);
+        viewer2->removePointCloud("cloud_rs");
+        viewer2->addPointCloud(cloud_rs_ptr, "cloud_rs");
+        delete rs;
         });
 
     /*滤波工具卡*/
@@ -75,6 +97,7 @@ PCLTool::PCLTool(QWidget *parent)
 void PCLTool::initialVtkWidget()
 {
     cloud_src_ptr.reset(new pcl::PointCloud<pcl::PointXYZ>);
+    cloud_rs_ptr.reset(new pcl::PointCloud<pcl::PointXYZ>);
     cloud_dst_ptr.reset(new pcl::PointCloud<pcl::PointXYZ>);
     narf_keypoints_ptr.reset(new pcl::PointCloud<pcl::PointXYZ>);
     harris_keypoints_ptr.reset(new pcl::PointCloud<pcl::PointXYZI>);
@@ -95,9 +118,19 @@ void PCLTool::initialVtkWidget()
     viewer->setBackgroundColor(0, 0, 0);
     viewer->addCoordinateSystem(0.1);
 
+    viewer2.reset(new pcl::visualization::PCLVisualizer("viewer2", false));
+    viewer2->addPointCloud(cloud_rs_ptr, "cloud_rs");
+    viewer2->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud_rs");
+    viewer2->setBackgroundColor(0, 0, 0);
+    viewer2->addCoordinateSystem(0.1);
+
     ui.qvtkWidget->SetRenderWindow(viewer->getRenderWindow());
     viewer->setupInteractor(ui.qvtkWidget->GetInteractor(), ui.qvtkWidget->GetRenderWindow());
     ui.qvtkWidget->update();
+
+    ui.qvtkWidget_2->SetRenderWindow(viewer2->getRenderWindow());
+    viewer2->setupInteractor(ui.qvtkWidget_2->GetInteractor(), ui.qvtkWidget_2->GetRenderWindow());
+    ui.qvtkWidget_2->update();
 }
 
 /**
@@ -122,7 +155,6 @@ void PCLTool::showCloudMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud)
 /**
  *  显示配准后点云信息
  */
-
 void PCLTool::showRegMsgs(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud, pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud2)
 {
     pcl::getMinMax3D(*input_cloud, min_p, max_p);
@@ -219,7 +251,7 @@ void PCLTool::openMeshFile()
         QString name = file_info.fileName();
 
         Mesh2PCD* transformer = new Mesh2PCD();
-        *cloud_src_ptr = *transformer->Transform(file_name, 0.001);
+        *cloud_src_ptr = *transformer->Transform(file_name, 0.001, 1000000);
         delete transformer;
         ui.lblFileName->setText(name);
 
@@ -378,7 +410,7 @@ void PCLTool::loadCloud1()
         else
         {
             Mesh2PCD* transformer = new Mesh2PCD();
-            *cloud_tgt_ptr = *transformer->Transform(file_name, ui.sboxRegLeafSize->value());
+            *cloud_tgt_ptr = *transformer->Transform(file_name, ui.sboxRegLeafSize->value(), ui.sboxLoadPoints->value());
             delete transformer;
         }
         ui.lblCloud1Name->setText(name);
@@ -427,7 +459,7 @@ void PCLTool::loadCloud2()
         else
         {
             Mesh2PCD* transformer = new Mesh2PCD();
-            *cloud_input_ptr = *transformer->Transform(file_name, ui.sboxRegLeafSize->value());
+            *cloud_input_ptr = *transformer->Transform(file_name, ui.sboxRegLeafSize->value(), ui.sboxLoadPoints->value());
             delete transformer;
         }
         
@@ -498,19 +530,17 @@ void PCLTool::doRegistration()
         centroid_point_tgt->points[0].z - centroid_point_tgt->points[1].z);
 
     Eigen::Matrix3f rotMatrix;
-    rotMatrix = Eigen::Quaternionf::FromTwoVectors(input_vec, tgt_vec);
+    rotMatrix = Eigen::Quaternionf::FromTwoVectors(input_vec, tgt_vec).toRotationMatrix();
 
     //初始变换矩阵
-    Eigen::AngleAxisf init_rotationX(rotMatrix.eulerAngles(2, 1, 0)[2], Eigen::Vector3f::UnitX());
-    Eigen::AngleAxisf init_rotationY(rotMatrix.eulerAngles(2, 1, 0)[1], Eigen::Vector3f::UnitY());
-    Eigen::AngleAxisf init_rotationZ(rotMatrix.eulerAngles(2, 1, 0)[0], Eigen::Vector3f::UnitZ());
-    Eigen::Vector3f init_transtion(centroid_point_tgt->points[0].x - centroid_point_input->points[0].x,
-        centroid_point_tgt->points[0].y - centroid_point_input->points[0].y,
-        centroid_point_tgt->points[0].z - centroid_point_input->points[0].z);
-    Eigen::Vector4f extra(0, 0, 0, 1);
-    Eigen::Matrix4f init_guess;
-    init_guess << rotMatrix, init_transtion, extra.transpose();
-    
+    Eigen::Affine3f init_guess_1 = Eigen::Affine3f::Identity();
+    //init_guess_1.translation() << centroid_point_tgt->points[0].x - centroid_point_input->points[0].x,
+    //    centroid_point_tgt->points[0].y - centroid_point_input->points[0].y,
+    //    centroid_point_tgt->points[0].z - centroid_point_input->points[0].z;
+    init_guess_1.rotate(Eigen::AngleAxisf(M_PI/4, Eigen::Vector3f::UnitZ()));
+    Eigen::Matrix4f init_guess = init_guess_1.matrix();
+
+
     pcl::VoxelGrid<pcl::PointXYZ> voxel_grid_ndt;
     voxel_grid_ndt.setLeafSize(ndt_leaf_size, ndt_leaf_size, ndt_leaf_size);
     voxel_grid_ndt.setInputCloud(cloud_input_ptr);
@@ -532,7 +562,7 @@ void PCLTool::doRegistration()
     voxel_grid_icp.setInputCloud(cloud_input_ptr);
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_icp_input(new pcl::PointCloud<pcl::PointXYZ>);
     voxel_grid_icp.filter(*cloud_icp_input);
-
+    
     //icp精配准
     pcl::IterativeClosestPoint<pcl::PointXYZ, pcl::PointXYZ> icp;
     pcl::search::KdTree<pcl::PointXYZ>::Ptr tree1(new pcl::search::KdTree<pcl::PointXYZ>);
@@ -561,6 +591,7 @@ void PCLTool::doRegistration()
     //可视化
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud_registrated_color(cloud_registrated_ptr, 0, 0, 255);
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud_registrated_color_icp(cloud_registrated_ptr_icp, 230, 230, 250);
+    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud2_color(cloud_input_ptr, 0, 255, 0);
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> centroid_input_color(centroid_point_input, 0, 120, 0);
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> centroid_tgt_color(centroid_point_tgt, 120, 0, 0);
@@ -572,6 +603,10 @@ void PCLTool::doRegistration()
     viewer->removePointCloud("centroid_tgt");
     viewer->addPointCloud(centroid_point_tgt, centroid_tgt_color, "centroid_tgt");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 8, "centroid_tgt");
+
+    pcl::transformPointCloud(*cloud_input_ptr, *cloud_input_ptr, init_guess);
+    viewer->removePointCloud("cloud2");
+    viewer->addPointCloud(cloud_input_ptr, cloud2_color, "cloud2");
     
     //粗配准和精配准结果
     viewer->removePointCloud("cloud_registrated_ndt");
